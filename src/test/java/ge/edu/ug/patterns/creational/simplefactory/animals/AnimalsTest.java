@@ -2,17 +2,24 @@ package ge.edu.ug.patterns.creational.simplefactory.animals;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 class AnimalsTest {
     @Test
     void testAnimals() {
-        // This code directly creates concrete objects (Tiger, Dog)
-        // which creates tight coupling and makes it harder to change the object creation process
-        // or add new animal types without modifying existing code
+        // Benefits of Simple Factory Pattern:
+        // 1. Encapsulates object creation logic in a single place
+        // 2. Reduces coupling between creation logic and object usage
+        // 3. Makes adding new types easier without changing client code
+        // 4. Provides a consistent way to create objects
 
-        Tiger tiger = new Tiger();
-        tiger.displayBehavior();
+        String animalNamesCsv = "Tiger, Dog";
+        String[] animalNames = animalNamesCsv.split(", ");
 
-        Dog dog = new Dog();
-        dog.displayBehavior();
+        AnimalFactory animalFactory = new AnimalFactory();
+
+        Arrays.stream(animalNames)
+                .map(animalFactory::createAnimal)
+                .forEach(Animal::displayBehavior);
     }
 }
