@@ -3,18 +3,17 @@ package ge.edu.ug.solid.isp.printer;
 import org.junit.jupiter.api.Test;
 
 class PrinterTest {
-    // This test demonstrates violation of Interface Segregation Principle (ISP)
-    // The Printer interface forces BasicPrinter to implement sendFax() which it doesn't need
-    // Instead, we should split the interface into smaller, specific interfaces
-    
+    // This example follows Interface Segregation Principle (ISP) by:
+    // - BasicPrinter implements only the print functionality it needs
+    // - AdvancedPrinter implements both print and fax functionality
+    // - No class is forced to implement methods it doesn't use
+
     @Test
-    public void testBadExample() {
-        System.out.println("***A demo without ISP.***");
-        Printer printer = new AdvancedPrinter();
-        printer.print();
-        printer.sendFax();
-        printer = new BasicPrinter();
-        printer.print();
-        printer.sendFax(); // Will throw error
+    public void testIspGoodExample() {
+        Printer basicPrinter = new BasicPrinter();
+        basicPrinter.print();
+        AdvancedPrinter advancedPrinter = new AdvancedPrinter();
+        advancedPrinter.print();
+        advancedPrinter.sendFax();
     }
 }
