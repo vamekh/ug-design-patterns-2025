@@ -8,18 +8,25 @@ class StudentsTest {
     
     @Test
     void testBadExample() {
-        // This example violates Open-Closed Principle (OCP)
-        // DistinctionDecider class needs to be modified each time we want to add new distinction rules
-        // Instead, we should define an interface for distinction rules and implement different strategies
+        // This test demonstrates Open-Closed Principle (OCP) improvements:
+        // 1. Each student type (Science, Arts) extends base Student class
+        // 2. Different distinction deciders implement common evaluation strategy
+        // 3. New student types can be added without modifying existing code
+        // 4. New distinction rules can be added by creating new decider classes
 
-        Student tesla = new Student("Nikola", "Tesla", "Comp.Sc.", 80.0);
-        Student einstein = new Student("Albert", "Einstein", "Physics", 70.0);
-        Student darwin = new Student("Charles", "Darwin", "History", 60.0);
-        Student john = new Student("John", "Doe", "English", 50.0);
-        List<Student> students = List.of(tesla, einstein, darwin, john);
+        Student nikola = new ScienceStudent("Nikola", "Tesla", 90.0, "Comp.Sc.");
+        Student einstein = new ScienceStudent("Albert", "Einstein", 70.0, "Physics");
+        Student darwin = new ArtsStudent("Charles", "Darwin", 60.0, "History");
+        Student john = new ArtsStudent("John", "Doe", 80.0, "English");
+        List<Student> scienceStudents = List.of(nikola, einstein);
+        List<Student> artsStudents = List.of(darwin, john);
+        ScienceDistinctionDecider scienceDecider = new ScienceDistinctionDecider();
+        ArtsDistinctionDecider artsDecider = new ArtsDistinctionDecider();
 
-        students.forEach(System.out::println);
-        DistinctionDecider decider = new DistinctionDecider();
-        students.forEach(decider::evaluateDistinction);
+        scienceStudents.forEach(System.out::println);
+        artsStudents.forEach(System.out::println);
+
+        scienceStudents.forEach(scienceDecider::evaluateDistinction);
+        artsStudents.forEach(artsDecider::evaluateDistinction);
     }
 }

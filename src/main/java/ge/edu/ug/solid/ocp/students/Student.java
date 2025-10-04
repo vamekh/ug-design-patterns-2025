@@ -6,10 +6,9 @@ public class Student {
     String department;
     double score;
 
-    public Student(String name, String regNumber, String department, double score) {
+    public Student(String name, String regNumber, double score) {
         this.name = name;
         this.regNumber = regNumber;
-        this.department = department;
         this.score = score;
     }
 
