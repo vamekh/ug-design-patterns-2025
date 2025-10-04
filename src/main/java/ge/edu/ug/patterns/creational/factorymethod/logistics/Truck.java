@@ -1,8 +1,9 @@
 package ge.edu.ug.patterns.creational.factorymethod.logistics;
 
-public class Truck extends Transport{
+// Concrete Product
+public class Truck implements Transport{
     @Override
-    public void deliver(String cargo) {
-        System.out.printf("Delivering %s by truck...", cargo);
+    public void deliver(String destination, String cargo) {
+        System.out.printf("Delivering %s to %s by truck...", cargo, destination);
     }
 }
