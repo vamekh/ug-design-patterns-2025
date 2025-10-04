@@ -1,8 +1,18 @@
 package ge.edu.ug.solid.lsp.shapes;
 
-public class Rectangle {
-    protected int width;
-    protected int height;
+public class Rectangle implements Shape{
+    private int width;
+    private int height;
+
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    @Override
+    public int area() {
+        return width * height;
+    }
 
     public void setWidth(int w) {
         width = w;
@@ -18,10 +28,6 @@ public class Rectangle {
 
     public int getHeight() {
         return height;
-    }
-
-    public int area() {
-        return width * height;
     }
 
 }
