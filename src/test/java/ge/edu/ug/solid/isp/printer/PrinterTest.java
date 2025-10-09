@@ -10,11 +10,10 @@ class PrinterTest {
     @Test
     public void testBadExample() {
         System.out.println("***A demo without ISP.***");
-        Printer printer = new AdvancedPrinter();
+        AdvancedPrinter printer = new AdvancedPrinter();
         printer.print();
         printer.sendFax();
-        printer = new BasicPrinter();
-        printer.print();
-        printer.sendFax(); // Will throw error
+        PrintDevice printer2 = new BasicPrinter();
+        printer2.print();
     }
 }

@@ -4,20 +4,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ShapesTest {
-    // This test demonstrates a violation of Liskov Substitution Principle (LSP)
-    // Square class inherits from Rectangle but changes its behavior:
-    // Setting different width and height on a Square breaks the Rectangle contract
-    // because Square forces width and height to be equal
-
     @Test
     void testShapes() {
-        Rectangle rectangle = new Square();
-        validateAreaCalculation(rectangle);
+        Square square = new Square();
+        square.setSide(5);
+        validateAreaCalculation(square, 25);
     }
 
-    private void validateAreaCalculation(Rectangle rectangle) {
-        rectangle.setWidth(10);
-        rectangle.setHeight(20);
-        Assertions.assertEquals(200, rectangle.area());
+    private void validateAreaCalculation(Shape rectangle, int expectedArea) {
+        Assertions.assertEquals(expectedArea, rectangle.area());
     }
 }

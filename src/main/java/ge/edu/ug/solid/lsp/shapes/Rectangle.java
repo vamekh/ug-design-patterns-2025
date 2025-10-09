@@ -1,6 +1,6 @@
 package ge.edu.ug.solid.lsp.shapes;
 
-public class Rectangle {
+public class Rectangle implements Shape {
     protected int width;
     protected int height;
 
@@ -20,6 +20,7 @@ public class Rectangle {
         return height;
     }
 
+    @Override
     public int area() {
         return width * height;
     }

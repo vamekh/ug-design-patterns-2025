@@ -13,14 +13,15 @@ class EmployeeTest {
     @Test
     void testBadExample() {
         Employee erich = new Employee("Erich", "Gamma", 10.0);
-        showEmployeeDetails(erich);
+        displayEmployeeDetails(erich);
+        EmployeeSeniorityChecker checker = new EmployeeSeniorityChecker();
+        System.out.println("Employee seniority: " + checker.checkSeniority(erich));
+        IdGenerator generator = new IdGenerator();
+        System.out.println("Employee ID: " + generator.generateId("EMP"));
     }
 
-    private void showEmployeeDetails(Employee employee) {
-        employee.displayEmployeeDetails();
-        employee.employeeId = employee.generateEmployeeId();
-
-        System.out.printf("Employee id: %s\n", employee.employeeId);
-        System.out.printf("This employee is a %s employee\n", employee.checkSeniority());
+    public void displayEmployeeDetails(Employee employee) {
+        System.out.println("Employee name: " + employee.firstName + " " + employee.lastName);
+        System.out.printf("This employee has %f years of experience\n", employee.experienceInYears);
     }
 }

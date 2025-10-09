@@ -1,6 +1,5 @@
 package ge.edu.ug.solid.isp.printer;
 
-public interface Printer {
-    void print();
+public interface FaxDevice {
     void sendFax();
 }

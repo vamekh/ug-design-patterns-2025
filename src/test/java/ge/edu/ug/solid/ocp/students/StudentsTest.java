@@ -12,14 +12,17 @@ class StudentsTest {
         // DistinctionDecider class needs to be modified each time we want to add new distinction rules
         // Instead, we should define an interface for distinction rules and implement different strategies
 
-        Student tesla = new Student("Nikola", "Tesla", "Comp.Sc.", 80.0);
-        Student einstein = new Student("Albert", "Einstein", "Physics", 70.0);
-        Student darwin = new Student("Charles", "Darwin", "History", 60.0);
-        Student john = new Student("John", "Doe", "English", 50.0);
-        List<Student> students = List.of(tesla, einstein, darwin, john);
+        Student tesla = new ScienceStudent("Nikola", "Tesla", 80.0, "Comp.Sc.");
+        Student einstein = new ScienceStudent("Albert", "Einstein", 70.0, "Physics");
+        Student darwin = new ArtsStudent("Charles", "Darwin", 60.0, "History");
+        Student john = new ArtsStudent("John", "Doe", 50.0, "English");
+        List<Student> artsStudents = List.of( darwin, john);
+        List<Student> scienceStudents = List.of( tesla, einstein);
 
-        students.forEach(System.out::println);
-        DistinctionDecider decider = new DistinctionDecider();
-        students.forEach(decider::evaluateDistinction);
+        ArtsDistinctionDecider decider = new ArtsDistinctionDecider();
+        artsStudents.forEach(decider::evaluateDistinction);
+
+        ScienceDistinctionDecider scienceDecider = new ScienceDistinctionDecider();
+        scienceStudents.forEach(scienceDecider::evaluateDistinction);
     }
 }

@@ -2,7 +2,7 @@ package ge.edu.ug.solid.dip.bulbswitch;
 
 import org.junit.jupiter.api.Test;
 
-class BulbSwitchTest {
+class SwitchTest {
     // This test demonstrates violation of Dependency Inversion Principle (DIP)
     // BulbSwitch and VentSwitch depend directly on concrete LightBulb and Vent classes
     // Instead, both switches should depend on abstractions (e.g., ISwitchable interface)
@@ -10,12 +10,13 @@ class BulbSwitchTest {
 
     @Test
     public void testSwitch() {
-        LightBulb bulb = new LightBulb();
-        BulbSwitch bulbSwitcher = new BulbSwitch(bulb, true);
-        bulbSwitcher.flip();
+        OnOffDevice bulb = new LightBulb();
+        Switch switcher = new Switch(bulb, true);
+        switcher.flip();
 
-        Vent vent = new Vent();
-        VentSwitch ventSwitcher = new VentSwitch(vent, true);
+        OnOffDevice vent = new Vent();
+        Switch ventSwitcher = new Switch(vent, true);
+        ventSwitcher.flip();
         ventSwitcher.flip();
     }
 

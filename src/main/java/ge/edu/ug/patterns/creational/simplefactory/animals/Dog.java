@@ -1,10 +1,11 @@
 package ge.edu.ug.patterns.creational.simplefactory.animals;
 
-public class Dog {
-    public Dog(){
+public class Dog implements Animal {
+    protected Dog(){
         System.out.println("Dog created");
     }
 
+    @Override
     public void displayBehavior() {
         System.out.println("Dog barks");
     }
