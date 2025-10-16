@@ -6,15 +6,10 @@ class CarsTest {
     @Test
     public void testCars() {
         Car tesla = new Car("Tesla", "Model S", "Red", "V8", 250);
-        System.out.println(tesla);
-        Car clone = new Car(
-                tesla.brand,
-                tesla.model,
-                tesla.color,
-                tesla.engineType,
-                tesla.topSpeed
-        );
+        Car clone = (Car) tesla.clone();
         System.out.println(clone);
+
+
     }
 
 }
