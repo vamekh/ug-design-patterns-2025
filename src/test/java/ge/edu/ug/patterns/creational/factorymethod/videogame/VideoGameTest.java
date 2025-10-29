@@ -6,10 +6,10 @@ public class VideoGameTest {
     @Test
     public void testVideoGame(){
 
-        Level forestLevel = new Level("Forest");
+        Level forestLevel = new Level1();
         forestLevel.startLevel();
 
-        Level volcanoLevel = new Level("Volcano");
+        Level volcanoLevel = new Level2();
         volcanoLevel.startLevel();
 
     }
