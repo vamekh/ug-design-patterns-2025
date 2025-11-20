@@ -4,29 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingCart {
-    private final String bitcoinAddress;
-    private final String paypalEmail;
-
     private int totalAmount = 0;
-    private List<Object> items = new ArrayList<>();
+    private List<String> items = new ArrayList<>();
 
-    public ShoppingCart(String bitcoinAddress, String paypalEmail) {
-        this.bitcoinAddress = bitcoinAddress;
-        this.paypalEmail = paypalEmail;
-    }
-
-    public void addItem(Object item, int price){
+    public void addItem(String item, int price) {
         items.add(item);
         totalAmount += price;
     }
 
-    public void checkoutWithPaypal(){
-        PaypalPayment paypalPayment = new PaypalPayment(this.paypalEmail);
-        paypalPayment.pay(totalAmount);
+    public List<String> getItems() {
+        return List.copyOf(items);
     }
 
-    public void checkoutWithBitCoin(){
-        BitcoinPayment bitcoinPayment = new BitcoinPayment(this.bitcoinAddress);
-        bitcoinPayment.pay(totalAmount);
+    // Context: delegates the payment to whichever strategy the client passes in.
+    public String checkout(PaymentStrategy paymentStrategy) {
+        return paymentStrategy.pay(totalAmount);
     }
 }

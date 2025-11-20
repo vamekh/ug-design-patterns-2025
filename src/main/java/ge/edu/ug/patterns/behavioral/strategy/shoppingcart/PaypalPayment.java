@@ -1,13 +1,16 @@
 package ge.edu.ug.patterns.behavioral.strategy.shoppingcart;
 
-public class PaypalPayment{
+public class PaypalPayment implements PaymentStrategy {
     String email;
 
     public PaypalPayment(String email) {
         this.email = email;
     }
 
-    public void pay(int amount) {
-        System.out.println("Paid " + amount + " using Paypal from address: " + email);
+    @Override
+    public String pay(int amount) {
+        String receipt = "Paid " + amount + " using Paypal with email: " + email;
+        System.out.println(receipt);
+        return receipt;
     }
 }
