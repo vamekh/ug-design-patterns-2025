@@ -1,49 +1,44 @@
 package ge.edu.ug;
 
+import state.concreteStates.DraftState;
+
 public class Client {
     public static void main(String[] args) {
-        TbilisiAircraftControlTower tbilisiControlTower = new TbilisiAircraftControlTower();
-        Aircraft boeing747 = new Aircraft(tbilisiControlTower, "DAL890", "BOEING747");
-        Aircraft airbus380 = new Aircraft(tbilisiControlTower, "UAE238", "AIRBUS380");
-        Aircraft boeing777 = new Aircraft(tbilisiControlTower, "GE352", "BOEING777");
+        DocumentContext context = new DocumentContext();
+        Document document = new Document(
+                "Document1",
+                "LONG CONTENT......",
+                294785
+        );
 
-        tbilisiControlTower.registerAircraft(boeing747);
-        tbilisiControlTower.registerAircraft(airbus380);
-        tbilisiControlTower.registerAircraft(boeing777);
+        DraftState draftState = new DraftState();
 
-        boeing747.send("REQUEST_LANDING");
+        context.setState(draftState);
 
-        System.out.println();
-        tbilisiControlTower.logCurrentRunwayOccupant();
-        System.out.println();
+        context.render(document);
+        context.publish(document);
+        context.review(document);
 
-        airbus380.send("REQUEST_LANDING");
+        context.render(document);
+        context.publish(document);
 
-        System.out.println();
-        tbilisiControlTower.logCurrentRunwayOccupant();
-        System.out.println();
+        context.review(document);
 
-        boeing747.send("FREE_RUNWAY");
+        document.setFeedbackGatheringComplete(true);
+        context.review(document);
 
-        System.out.println();
-        tbilisiControlTower.logCurrentRunwayOccupant();
-        System.out.println();
+        context.render(document);
+        context.review(document);
 
-        boeing747.send("FREE_RUNWAY");
-        System.out.println();
-        airbus380.send("FREE_RUNWAY");
-        System.out.println();
+        document.setReviewApproved(true);
+        context.review(document);
+        context.publish(document);
 
-        airbus380.send("REQUEST_LANDING");
-        System.out.println();
-        airbus380.send("REQUEST_LANDING");
-        System.out.println();
-        boeing777.send("REQUEST_LANDING");
-        System.out.println();
-        airbus380.send("FREE_RUNWAY");
-        System.out.println();
-        tbilisiControlTower.logCurrentRunwayOccupant();
-        System.out.println();
-        boeing777.send("REQUEST_LANDING");
+        context.render(document);
+        context.review(document);
+        context.publish(document);
+
+        context.startRevision(document);
+        context.render(document);
     }
 }
