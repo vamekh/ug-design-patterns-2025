@@ -5,11 +5,15 @@ import org.junit.jupiter.api.Test;
 class ShoppingChartTest {
     @Test
     void testCheckoutWithPaypal() {
-        ShoppingChart chart = new ShoppingChart("ABCD_BITCOIN", "my@paypal.com");
-        chart.addItem("Item1", 100);
-        chart.addItem("Item2", 200);
+        ShoppingChart chart = new ShoppingChart();
+        chart.addItem(new FidgetSpinner(100));
+        chart.addItem(new FidgetSpinner(200));
 
-        chart.checkoutWithPaypal();
+        PaymentStrategy strategy;
+//        strategy = new PaypalPayment("my@paypal.com");
+        strategy = new BitcoinPayment("aaaaa");
+
+        chart.checkout(strategy);
     }
 
 }

@@ -7,7 +7,7 @@ class CoffeeMachineTest {
     public void testCoffeeMachine() throws InterruptedException {
         CoffeeMachine machine = new CoffeeMachine();
         machine.clean();
-        Thread.sleep(200);
+        Thread.sleep(6000);
         machine.makeCoffee();
 
     }

@@ -5,16 +5,19 @@ import org.junit.jupiter.api.Test;
 class ChatTest {
 
     @Test
-    void broadcastMessage() {
+    void broadcastMessage() throws InterruptedException {
         ChatMediator mediator = new Chat();
         ChatMember user1 = new ConcreteMember("Giorgi 1", mediator);
         ChatMember user2 = new ConcreteMember("Sandro", mediator);
         ChatMember user3 = new ConcreteMember("Giorgi 2", mediator);
         ChatMember user4 = new ConcreteMember("Vamekh", mediator);
 
-        user1.sendMessage("რა კარგი პატერნია!");
-        user2.sendMessage("არც ისე!");
-        user3.sendMessage("რას ერჩი?!");
-        user4.sendMessage("ხმაურია აუდიტორიაში!");
+        user1.sendMessage("Great pattern!");
+        Thread.sleep(1000);
+        user2.sendMessage("Not really!");
+        Thread.sleep(1000);
+        user3.sendMessage("What's your concern?!");
+        Thread.sleep(1000);
+        user4.sendMessage("Tsssss, it is too loud!");
     }
 }
