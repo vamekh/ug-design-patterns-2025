@@ -8,6 +8,16 @@ public class Bus extends Vehicle{
         this.seats = seats;
     }
 
+    public Bus (Bus bus) {
+        super(bus);
+        this.seats = bus.seats;
+    }
+
+    @Override
+    public Bus clone() {
+        return new Bus(this);
+    }
+
     @Override
     public String toString() {
         return String.format("Bus: %s seats: %d", super.toString(), seats);

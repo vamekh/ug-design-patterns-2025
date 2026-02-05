@@ -1,7 +1,7 @@
 package ge.edu.ug.patterns.creational.prototype.cars;
 
-public abstract class Vehicle  {
-    public String engineType;
+public abstract class Vehicle implements Prototype {
+    private String engineType;
     public String color;
     public String model;
     public String brand;
@@ -12,6 +12,16 @@ public abstract class Vehicle  {
         this.color = color;
         this.engineType = engineType;
     }
+
+    public Vehicle(Vehicle vehicle) {
+        this.brand = vehicle.brand;
+        this.model = vehicle.model;
+        this.color = vehicle.color;
+        this.engineType = vehicle.engineType;
+    }
+
+    @Override
+    public abstract Vehicle clone();
 
     @Override
     public String toString() {
