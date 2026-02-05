@@ -5,19 +5,19 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 class NotificationManagerTest {
-    // This code violates DIP (Dependency Inversion Principle) because:
-    // 1. NotificationManager depends directly on concrete SmsService class instead of an abstraction
-    // 2. High-level NotificationManager is tightly coupled to low-level SmsService implementation
-    // 3. This makes it difficult to swap notification methods (e.g., email, push) without modifying NotificationManager
+    //  * 1. High-level NotificationManager depends on abstraction (presumably NotificationService interface)
+    // * 2. Low-level SmsService and EmailService depend on the same abstraction
+    // * 3. Services can be switched at runtime due to loose coupling through abstraction
 
     @Test
     public void testNotificationManager() {
         List<String> recipients = List.of("Erich Gamma", "Richard Helm", "Ralph Johnson", "John Vlissides");
 
-        SmsService smsService = new SmsService();
-        NotificationManager manager = new NotificationManager(smsService);
+        NotificationManager manager = new NotificationManager(new SmsService());
 
-        recipients.forEach(recipient -> manager.notify(recipient, "Hello", "Welcome to the company!"));
+        recipients.forEach(recipient -> manager.notify(recipient, "Good news", "SOLID principals are eternal!"));
+
+        manager.setSenderService(new EmailService());
+        recipients.forEach(recipient -> manager.notify(recipient, "Nice to know", "Design patterns are awesome!"));
     }
-
 }
