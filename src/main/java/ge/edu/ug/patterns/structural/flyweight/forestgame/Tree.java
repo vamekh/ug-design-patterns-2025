@@ -1,25 +1,39 @@
 package ge.edu.ug.patterns.structural.flyweight.forestgame;
 
-public abstract class Tree {
+public abstract class Tree implements TreeComonProps{
     public int locationX;
     public int locationY;
     public int height;
-    public String barkColor;
-    public String specie;
-    public String leafType;
-    public String rootsType;
+    private TreeComonProps comonProps;
 
-    public Tree(int locationX, int locationY, int height, String barkColor, String specie, String leafType, String rootsType) {
+
+
+    public Tree(int locationX, int locationY, int height, TreeComonProps comonProps) {
         this.locationX = locationX;
         this.locationY = locationY;
         this.height = height;
-        this.barkColor = barkColor;
-        this.specie = specie;
-        this.leafType = leafType;
-        this.rootsType = rootsType;
+        this.comonProps = comonProps;
     }
 
+    @Override
+    public String getBarkColor() {
+        return comonProps.getBarkColor();
+    }
+    @Override
+    public String getSpecie() {
+        return comonProps.getSpecie();
+    }
+    @Override
+    public String getLeafType() {
+        return comonProps.getLeafType();
+    }
+    @Override
+    public String getRootsType() {
+        return comonProps.getRootsType();
+    }
+
+
     public void render(){
-        System.out.printf("Rendering tree on location: %d\n");
+        System.out.printf("Rendering tree on location: %d,%d\n", locationX, locationY);
     }
 }
