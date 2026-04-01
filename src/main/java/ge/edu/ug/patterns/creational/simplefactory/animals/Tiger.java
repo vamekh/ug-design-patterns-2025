@@ -1,7 +1,7 @@
 package ge.edu.ug.patterns.creational.simplefactory.animals;
 
 public class Tiger implements Animal{
-    public Tiger(){
+    Tiger(){
         System.out.println("Tiger created");
     }
 
