@@ -1,8 +1,6 @@
 package ge.edu.ug.patterns.behavioral.nullobject.logger;
 
-// Logging is optional, so the logger may be null and every log call is guarded
-// by "if (logger != null)". Each new log statement needs the same check again,
-// and one forgotten check means a NullPointerException in the middle of a payment.
+// Client: always has a Logger, so it can call it without null checks
 public class TransactionService {
     private final Logger logger;
 
@@ -11,7 +9,7 @@ public class TransactionService {
     }
 
     public TransactionService(Logger logger) {
-        this.logger = logger;
+        this.logger = logger != null ? logger : LoggerNullObject.getInstance();
     }
 
     public void processTransaction(String transactionId) {
@@ -19,17 +17,11 @@ public class TransactionService {
             if (transactionId == null) {
                 throw new IllegalArgumentException("Transaction ID cannot be null");
             }
-            if (logger != null) {
-                logger.warn("Processing transaction: " + transactionId);
-            }
+            logger.warn("Processing transaction: " + transactionId);
             // Process the transaction...
-            if (logger != null) {
-                logger.warn("Transaction completed: " + transactionId);
-            }
+            logger.warn("Transaction completed: " + transactionId);
         } catch (Exception e) {
-            if (logger != null) {
-                logger.log(e);
-            }
+            logger.log(e);
         }
     }
 }

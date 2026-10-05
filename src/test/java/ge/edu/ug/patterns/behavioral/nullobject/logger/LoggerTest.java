@@ -4,10 +4,9 @@ import ge.edu.ug.testutil.ConsoleCapture;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// All scenarios pass, but only because TransactionService checks the logger
-// for null before every single log call.
 class LoggerTest {
 
     @Test
@@ -48,5 +47,10 @@ class LoggerTest {
         String out = ConsoleCapture.run(() -> service.processTransaction("TX12347"));
 
         assertEquals("", out);
+    }
+
+    @Test
+    void testNullObjectIsASingleton() {
+        assertSame(LoggerNullObject.getInstance(), LoggerNullObject.getInstance());
     }
 }
