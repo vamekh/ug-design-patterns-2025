@@ -1,7 +1,7 @@
 package ge.edu.ug.patterns.structural.bridge.remotedevice;
 
 // Concrete Implementor
-public class Tv implements Device {
+public class SmartSpeaker implements Device {
     private boolean on = false;
     private int volume = 30;
     private int channel = 1;
@@ -38,6 +38,6 @@ public class Tv implements Device {
 
     @Override
     public void setChannel(int channel) {
-        this.channel = Math.max(1, Math.min(99, channel));
+        this.channel = Math.max(1, Math.min(10, channel));
     }
 }

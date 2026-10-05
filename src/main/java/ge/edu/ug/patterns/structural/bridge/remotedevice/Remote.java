@@ -1,9 +1,10 @@
 package ge.edu.ug.patterns.structural.bridge.remotedevice;
 
-public class AdvancedRadioRemote {
-    protected final Radio device;
+// Abstraction: holds a Device (the bridge) and implements the common controls once.
+public abstract class Remote {
+    protected final Device device;
 
-    public AdvancedRadioRemote(Radio device) {
+    protected Remote(Device device) {
         this.device = device;
     }
 
@@ -29,9 +30,5 @@ public class AdvancedRadioRemote {
 
     public void channelDown() {
         device.setChannel(device.getChannel() - 1);
-    }
-
-    public void mute() {
-        device.setVolume(0);
     }
 }
