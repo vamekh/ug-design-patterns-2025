@@ -1,7 +1,7 @@
 package ge.edu.ug.patterns.creational.singleton.dbconnection;
 
 public class OrderService {
-    private final DbConnection connection = new DbConnection();
+    private final DbConnection connection = DbConnection.getInstance();
 
     public String findOrders(String userName) {
         return connection.query("SELECT * FROM orders WHERE user = '" + userName + "'");
