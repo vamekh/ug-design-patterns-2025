@@ -4,16 +4,21 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// PROBLEM: callers pass nulls to skip parts and must count positions ("is the 4th one display or gpu?").
-// The "gaming" and "coding" presets are copy-pasted wherever such a PC is needed.
-// Nothing stops a Computer without a processor: new Computer(null, null).
+// Builder: parts are set by name, skipped parts are simply not set.
+// Director: the "gaming" and "coding" presets are defined once and customised per caller.
 class ComputerTest {
+
+    ComputerDirector computerDirector = new ComputerDirector();
 
     @Test
     public void testCustomComputer() {
-        // only processor, ram and gpu wanted -> two nulls in the middle
-        Computer computer = new Computer("Intel Core i7", "32GB", null, null, "RTX 4070");
+        Computer computer = new ComputerBuilder()
+                .setProcessor("Intel Core i7")
+                .setRam("32GB")
+                .setGpu("RTX 4070")
+                .build();
 
         assertEquals("Intel Core i7", computer.getProcessor());
         assertNull(computer.getStorage());
@@ -22,8 +27,9 @@ class ComputerTest {
 
     @Test
     public void testGamingPc() {
-        // gaming preset, copy-paste #1
-        Computer gamingPc = new Computer("Intel i5", "16GB", "1TB", "4K", "RTX 4070");
+        Computer gamingPc = computerDirector.getGamingPc()
+                .setDisplay("4K")
+                .build();
 
         assertEquals("Intel i5", gamingPc.getProcessor());
         assertEquals("4K", gamingPc.getDisplay());
@@ -31,8 +37,9 @@ class ComputerTest {
 
     @Test
     public void testGamingPcWithOtherDisplay() {
-        // gaming preset, copy-paste #2 - changing the preset means editing every copy
-        Computer gamingPc = new Computer("Intel i5", "16GB", "1TB", "2K", "RTX 4070");
+        Computer gamingPc = computerDirector.getGamingPc()
+                .setDisplay("2K")
+                .build();
 
         assertEquals("RTX 4070", gamingPc.getGpu());
         assertEquals("2K", gamingPc.getDisplay());
@@ -40,17 +47,16 @@ class ComputerTest {
 
     @Test
     public void testCodingPc() {
-        // coding preset: no gpu, but we still have to pick the right constructor
-        Computer codingPc = new Computer("Intel i9", "16GB", "1TB", "2K");
+        Computer codingPc = computerDirector.getCodingPc()
+                .setDisplay("2K")
+                .build();
 
         assertEquals("Intel i9", codingPc.getProcessor());
         assertNull(codingPc.getGpu());
     }
 
     @Test
-    public void testInvalidComputerIsAccepted() {
-        Computer broken = new Computer(null, null);
-
-        assertNull(broken.getProcessor());
+    public void testInvalidComputerIsRejected() {
+        assertThrows(IllegalStateException.class, () -> new ComputerBuilder().build());
     }
 }
