@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// PROBLEM: the tests pass, but each expected answer comes from a different if-chain in
-// TapePlayer; the rules for "recording" alone are spread across all six buttons.
 class TapePlayerTest {
 
     @Test
