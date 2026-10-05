@@ -1,38 +1,38 @@
 package ge.edu.ug.antipatterns.singletonabuse;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// All tests share ONE AppConfig. Without the manual reset below, a test that switches to USD
-// leaks into whichever test runs next, and results depend on test order (see LeakyInvoiceTest).
-// The reset() method exists in production code only to make these tests possible.
+// Each test builds its own Config - no shared state, no reset(), any order works.
 class InvoiceTest {
 
-    @BeforeEach
-    void resetGlobalState() {
-        AppConfig.getInstance().reset(); // forget this line and tests start failing "randomly"
+    private static InvoicePrinter printerFor(Config config) {
+        return new InvoicePrinter(config, new InvoiceCalculator(config));
     }
 
     @Test
     void defaultConfigUsesGelAndVat() {
-        assertEquals("Nino: 118.0 GEL", new InvoicePrinter().line("Nino", 100.0));
+        assertEquals("Nino: 118.0 GEL", printerFor(new Config("GEL", 0.18)).line("Nino", 100.0));
     }
 
     @Test
     void usdWithoutTax() {
-        AppConfig.getInstance().setCurrency("USD");
-        AppConfig.getInstance().setTaxRate(0.0);
-
-        assertEquals("John: 100.0 USD", new InvoicePrinter().line("John", 100.0));
+        assertEquals("John: 100.0 USD", printerFor(new Config("USD", 0.0)).line("John", 100.0));
     }
 
     @Test
-    void calculatorSecretlyReadsTheGlobal() {
-        // new InvoiceCalculator() looks dependency-free, yet its result changes with global state
-        AppConfig.getInstance().setTaxRate(0.5);
+    void calculatorDependencyIsVisible() {
+        assertEquals(150.0, new InvoiceCalculator(new Config("GEL", 0.5)).total(100.0), 0.001);
+    }
 
-        assertEquals(150.0, new InvoiceCalculator().total(100.0), 0.001);
+    @Test
+    void twoConfigsCanLiveSideBySide() {
+        // impossible with a singleton: one global currency for the whole JVM
+        InvoicePrinter georgian = printerFor(new Config("GEL", 0.18));
+        InvoicePrinter american = printerFor(new Config("USD", 0.0));
+
+        assertEquals("Nino: 118.0 GEL", georgian.line("Nino", 100.0));
+        assertEquals("John: 100.0 USD", american.line("John", 100.0));
     }
 }

@@ -1,11 +1,16 @@
 package ge.edu.ug.antipatterns.singletonabuse;
 
 public class InvoicePrinter {
-    private final InvoiceCalculator calculator = new InvoiceCalculator();
+    private final Config config;
+    private final InvoiceCalculator calculator;
+
+    public InvoicePrinter(Config config, InvoiceCalculator calculator) {
+        this.config = config;
+        this.calculator = calculator;
+    }
 
     public String line(String customer, double net) {
-        // second hidden dependency on the same global
-        String currency = AppConfig.getInstance().getCurrency();
+        String currency = config.getCurrency();
         return customer + ": " + calculator.total(net) + " " + currency;
     }
 }
