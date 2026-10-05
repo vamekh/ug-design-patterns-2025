@@ -7,8 +7,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// PROBLEM: the behaviour is correct, but every row of this state table lives inside a switch
-// in CoffeeMachine. A new state would mean revisiting every method and every case.
 class CoffeeMachineTest {
 
     @Test
