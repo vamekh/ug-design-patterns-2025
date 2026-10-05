@@ -1,23 +1,21 @@
 package ge.edu.ug.patterns.structural.composite.filesystem;
 
-public class File {
-    private final String name;
+// Leaf
+public class File extends FileSystemNode {
     private final long size;
 
     public File(String name, long size) {
-        this.name = name;
+        super(name);
         this.size = size;
     }
 
-    public String getName() {
-        return name;
-    }
-
+    @Override
     public long getSize() {
         return size;
     }
 
+    @Override
     public String print(String indent) {
-        return indent + name + " (" + size + " B)\n";
+        return indent + getName() + " (" + size + " B)\n";
     }
 }

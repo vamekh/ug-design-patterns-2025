@@ -4,21 +4,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// PROBLEM: File and Folder share no common type. Building the tree needs addFile/addFolder,
-// find() returns Object, and the client must use instanceof to know what it got back.
-// There is no way to add a Shortcut without editing Folder (new list, new add, new loops).
 class FileSystemTest {
 
     private Folder buildTree() {
         Folder src = new Folder("src")
-                .addFile(new File("Main.java", 1200))
-                .addFile(new File("Util.java", 800));
+                .add(new File("Main.java", 1200))
+                .add(new File("Util.java", 800));
         Folder docs = new Folder("docs")
-                .addFile(new File("readme.md", 300));
+                .add(new File("readme.md", 300));
         return new Folder("project")
-                .addFolder(src)
-                .addFolder(docs)
-                .addFile(new File("pom.xml", 700));
+                .add(src)
+                .add(docs)
+                .add(new File("pom.xml", 700));
     }
 
     @Test
@@ -41,17 +38,22 @@ class FileSystemTest {
     }
 
     @Test
-    void clientMustCheckTypeOfFoundEntry() {
-        Object found = buildTree().find("Util.java");
-        // The client has to know every concrete type to do anything with the result.
-        long size;
-        if (found instanceof File) {
-            size = ((File) found).getSize();
-        } else if (found instanceof Folder) {
-            size = ((Folder) found).getSize();
-        } else {
-            size = -1;
-        }
-        assertEquals(800, size);
+    void clientTreatsEveryNodeUniformly() {
+        FileSystemNode found = buildTree().find("Util.java");
+        assertEquals(800, found.getSize());
+        assertEquals(1200 + 800, buildTree().find("src").getSize());
+        assertNull(buildTree().find("missing.txt"));
+    }
+
+    @Test
+    void addingShortcutNeedsNoChangeInFolder() {
+        Folder project = buildTree();
+        FileSystemNode main = project.find("Main.java");
+        Folder desktop = new Folder("desktop").add(new Shortcut("Main.lnk", main));
+        project.add(desktop);
+
+        assertEquals(3000, project.getSize()); // shortcuts take no space
+        assertTrue(project.print("").contains("    Main.lnk -> Main.java\n"));
+        assertSame(main, ((Shortcut) project.find("Main.lnk")).getTarget());
     }
 }
