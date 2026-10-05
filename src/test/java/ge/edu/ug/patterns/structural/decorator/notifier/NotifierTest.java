@@ -3,16 +3,16 @@ package ge.edu.ug.patterns.structural.decorator.notifier;
 import ge.edu.ug.testutil.ConsoleCapture;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// Channels are chosen with positional booleans: new Notifier("x", true, false) says nothing
-// about what it does, and every new channel adds another flag to every call site.
+// Channels are added by wrapping; the wrapping order is the sending order.
 class NotifierTest {
 
     @Test
     void sendsToEmailInstagramAndFacebook() {
-        Notifier notifier = new Notifier("vamexinar", true, true);
+        INotifier notifier = new FacebookDecorator(new InstagramDecorator(new Notifier("vamexinar")));
 
         String out = ConsoleCapture.run(() -> notifier.send("Achtung!"));
 
@@ -24,12 +24,18 @@ class NotifierTest {
 
     @Test
     void emailOnly() {
-        Notifier notifier = new Notifier("vamexinar", false, false);
+        INotifier notifier = new Notifier("vamexinar");
 
         String out = ConsoleCapture.run(() -> notifier.send("Hi"));
 
         assertTrue(out.contains("vamexinar@gmail.com"));
         assertFalse(out.contains("Facebook"));
         assertFalse(out.contains("Instagram"));
+    }
+
+    @Test
+    void decoratorsKeepTheWrappedUsername() {
+        INotifier notifier = new InstagramDecorator(new Notifier("nino"));
+        assertEquals("nino", notifier.getUsername());
     }
 }
