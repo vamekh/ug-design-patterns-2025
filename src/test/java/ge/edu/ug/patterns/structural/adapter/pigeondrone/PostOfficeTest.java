@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// Works, but only because PostOffice has a special constructor and an if for pigeons.
-// The translation from the drone call to the bird call is buried inside the client.
+// PostOffice only talks to DronePost; BirdAdapter makes the pigeon service fit that interface.
 class PostOfficeTest {
 
     @Test
@@ -21,7 +20,7 @@ class PostOfficeTest {
 
     @Test
     void pigeonDeliversMessageOnly() {
-        PostOffice postOffice = new PostOffice(new PigeonDelivery());
+        PostOffice postOffice = new PostOffice(new BirdAdapter(new PigeonDelivery()));
 
         String out = ConsoleCapture.run(() -> postOffice.deliver("Khash", "Ksani str.", "It is khash time!"));
 
