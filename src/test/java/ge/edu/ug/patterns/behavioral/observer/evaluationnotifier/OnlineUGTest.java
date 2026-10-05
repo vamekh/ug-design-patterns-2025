@@ -7,27 +7,34 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// PROBLEM: grades are posted, but students know nothing until each of them
-// calls checkForNewEvaluations(). The test has to log every student in by hand.
 class OnlineUGTest {
 
     @Test
-    void studentsDoNotKnowAboutGradesUntilTheyCheck() {
+    void studentsAreNotifiedAboutTheirOwnGrades() {
         OnlineUG onlineUG = new OnlineUG();
-        Student student1 = new Student(1001, onlineUG);
-        Student student2 = new Student(1002, onlineUG);
+        // UG codes above 127: comparing Integer with == would silently notify nobody
+        Student student1 = new Student(1001);
+        Student student2 = new Student(1002);
+        onlineUG.subscribe(student1);
+        onlineUG.subscribe(student2);
 
         onlineUG.addEvaluation(1001, 85);
         onlineUG.addEvaluation(1002, 90);
         onlineUG.addEvaluation(1002, 95);
 
-        assertTrue(student1.getReceivedEvaluations().isEmpty());
-        assertTrue(student2.getReceivedEvaluations().isEmpty());
-
-        student1.checkForNewEvaluations();
-        student2.checkForNewEvaluations();
-
         assertEquals(List.of(85), student1.getReceivedEvaluations());
         assertEquals(List.of(90, 95), student2.getReceivedEvaluations());
+    }
+
+    @Test
+    void unsubscribedStudentIsNoLongerNotified() {
+        OnlineUG onlineUG = new OnlineUG();
+        Student student = new Student(1001);
+        onlineUG.subscribe(student);
+
+        onlineUG.unsubscribe(student);
+        onlineUG.addEvaluation(1001, 85);
+
+        assertTrue(student.getReceivedEvaluations().isEmpty());
     }
 }

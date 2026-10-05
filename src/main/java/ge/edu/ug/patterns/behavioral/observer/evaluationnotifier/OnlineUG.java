@@ -1,22 +1,27 @@
 package ge.edu.ug.patterns.behavioral.observer.evaluationnotifier;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-// PROBLEM: Online UG only stores evaluations. A Student learns about a new grade
-// only if they log in and ask getEvaluations() - and must remember how many grades
-// they have already seen. Until they check, a posted grade goes unnoticed.
-public class OnlineUG {
-    private final Map<Integer, List<Integer>> evaluations = new HashMap<>();
+// Concrete Subject: notifies only the students whose topic matches the UG code
+public class OnlineUG implements Observable {
+    private final List<Observer> students = new ArrayList<>();
+
+    @Override
+    public void subscribe(Observer student) {
+        students.add(student);
+    }
+
+    @Override
+    public void unsubscribe(Observer student) {
+        students.remove(student);
+    }
 
     public void addEvaluation(Integer ugCode, Integer evaluation) {
         System.out.println("OnlineUG: " + ugCode + " received evaluation: " + evaluation);
-        evaluations.computeIfAbsent(ugCode, k -> new ArrayList<>()).add(evaluation);
-    }
-
-    public List<Integer> getEvaluations(Integer ugCode) {
-        return List.copyOf(evaluations.getOrDefault(ugCode, List.of()));
+        // equals, not ==: Integer objects above 127 are not cached
+        students.stream()
+                .filter(s -> ugCode.equals(s.getTopic()))
+                .forEach(s -> s.notify(evaluation));
     }
 }
