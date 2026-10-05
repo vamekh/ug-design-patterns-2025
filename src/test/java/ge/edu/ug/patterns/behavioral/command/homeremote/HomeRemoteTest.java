@@ -1,38 +1,83 @@
 package ge.edu.ug.patterns.behavioral.command.homeremote;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// PROBLEM: every button is a method on HomeRemote bound to one concrete device.
-// Undo has to be done by the caller, who must know which opposite method to call.
 class HomeRemoteTest {
+    private static final int OPEN_DOOR = 0, CLOSE_DOOR = 1, LIGHT_ON = 2, LIGHT_OFF = 3, LEAVE_HOME = 4;
+
+    private DoorEngine garageDoor;
+    private SmartLightBulb garageLight;
+    private HomeRemote remote;
+
+    @BeforeEach
+    void setUp() {
+        garageDoor = new DoorEngine();
+        garageLight = new SmartLightBulb();
+        remote = new HomeRemote(6);
+        remote.setCommand(OPEN_DOOR, new DoorOpenCommand(garageDoor));
+        remote.setCommand(CLOSE_DOOR, new DoorCloseCommand(garageDoor));
+        remote.setCommand(LIGHT_ON, new LightOnCommand(garageLight));
+        remote.setCommand(LIGHT_OFF, new LightOffCommand(garageLight));
+        remote.setCommand(LEAVE_HOME, new MacroCommand(List.of(
+                new LightOffCommand(garageLight), new DoorCloseCommand(garageDoor))));
+    }
 
     @Test
     void buttonsDriveTheDevices() {
-        DoorEngine garageDoor = new DoorEngine();
-        SmartLightBulb garageLight = new SmartLightBulb();
-        HomeRemote remote = new HomeRemote(garageDoor, garageLight);
-
-        remote.openGarageDoor();
-        remote.switchOnGarageLight();
+        remote.press(OPEN_DOOR);
+        remote.press(LIGHT_ON);
         assertTrue(garageDoor.isOpen());
         assertTrue(garageLight.isOn());
 
-        remote.leaveHome();
+        remote.press(LEAVE_HOME);
         assertFalse(garageDoor.isOpen());
         assertFalse(garageLight.isOn());
     }
 
     @Test
-    void undoIsTheCallersJob() {
-        DoorEngine garageDoor = new DoorEngine();
-        HomeRemote remote = new HomeRemote(garageDoor, new SmartLightBulb());
+    void undoLastReversesPressesInOrder() {
+        remote.press(OPEN_DOOR);
+        remote.press(LIGHT_ON);
 
-        remote.openGarageDoor();
-        // no remote.undoLast(): we must remember what was pressed and call the opposite ourselves
-        remote.closeGarageDoor();
+        remote.undoLast();
+        assertFalse(garageLight.isOn());
+        assertTrue(garageDoor.isOpen());
+
+        remote.undoLast();
+        assertFalse(garageDoor.isOpen());
+        assertDoesNotThrow(remote::undoLast); // empty history is fine
+    }
+
+    @Test
+    void undoingAMacroRestoresEverything() {
+        remote.press(OPEN_DOOR);
+        remote.press(LIGHT_ON);
+        remote.press(LEAVE_HOME);
+
+        remote.undoLast();
+        assertTrue(garageDoor.isOpen());
+        assertTrue(garageLight.isOn());
+    }
+
+    @Test
+    void emptySlotIsANoCommand() {
+        assertDoesNotThrow(() -> remote.press(5));
+    }
+
+    @Test
+    void reassigningAButtonNeedsNoRemoteChange() {
+        DoorEngine yardBarrier = new DoorEngine();
+        remote.setCommand(OPEN_DOOR, new DoorOpenCommand(yardBarrier));
+
+        remote.press(OPEN_DOOR);
+        assertTrue(yardBarrier.isOpen());
         assertFalse(garageDoor.isOpen());
     }
 }

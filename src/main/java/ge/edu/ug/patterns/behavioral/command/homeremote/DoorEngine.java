@@ -1,5 +1,6 @@
 package ge.edu.ug.patterns.behavioral.command.homeremote;
 
+// Receiver
 public class DoorEngine {
     private boolean open;
 

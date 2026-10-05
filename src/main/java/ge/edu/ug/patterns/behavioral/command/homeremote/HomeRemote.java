@@ -1,35 +1,31 @@
 package ge.edu.ug.patterns.behavioral.command.homeremote;
 
-// PROBLEM: the remote knows every device class and has one hard-wired method per button.
-// Adding a device (or re-assigning a button) means editing HomeRemote; a "leaving home"
-// button needs yet another method, and there is no way to undo the last press.
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+
+// Invoker: knows only the Command interface, not a single device class.
 public class HomeRemote {
-    private final DoorEngine garageDoor;
-    private final SmartLightBulb garageLight;
+    private final Command[] slots;
+    private final Deque<Command> history = new ArrayDeque<>();
 
-    public HomeRemote(DoorEngine garageDoor, SmartLightBulb garageLight) {
-        this.garageDoor = garageDoor;
-        this.garageLight = garageLight;
+    public HomeRemote(int slotCount) {
+        slots = new Command[slotCount];
+        Arrays.fill(slots, new NoCommand());
     }
 
-    public void openGarageDoor() {
-        garageDoor.open();
+    public void setCommand(int slot, Command command) {
+        slots[slot] = command;
     }
 
-    public void closeGarageDoor() {
-        garageDoor.close();
+    public void press(int slot) {
+        slots[slot].execute();
+        history.push(slots[slot]);
     }
 
-    public void switchOnGarageLight() {
-        garageLight.switchOn();
-    }
-
-    public void switchOffGarageLight() {
-        garageLight.switchOff();
-    }
-
-    public void leaveHome() {
-        garageLight.switchOff();
-        garageDoor.close();
+    public void undoLast() {
+        if (!history.isEmpty()) {
+            history.pop().undo();
+        }
     }
 }
