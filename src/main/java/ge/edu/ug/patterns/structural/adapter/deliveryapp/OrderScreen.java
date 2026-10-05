@@ -3,13 +3,15 @@ package ge.edu.ug.patterns.structural.adapter.deliveryapp;
 import java.util.ArrayList;
 import java.util.List;
 
-// Our app works with List<String>, but CoolLib wants String[]. Every call site converts
-// with toArray(...) and calls CoolLib directly, so the whole screen is welded to one
-// third-party API: switching to plain console output or another library means rewriting it.
+// Client: depends only on IDeliveryApp and keeps working with List<String>
 public class OrderScreen {
-    private final CoolLib coolLib = new CoolLib();
+    private final IDeliveryApp display;
     private final List<String> menus = new ArrayList<>();
     private final List<String> orders = new ArrayList<>();
+
+    public OrderScreen(IDeliveryApp display) {
+        this.display = display;
+    }
 
     public void addMenu(String menu) {
         menus.add(menu);
@@ -20,11 +22,11 @@ public class OrderScreen {
     }
 
     public void showMenus() {
-        coolLib.DisplayMenus(menus.toArray(new String[0]));
+        display.displayMenus(menus);
     }
 
     public void showOrders() {
-        coolLib.DisplayOrders(orders.toArray(new String[0]));
+        display.displayOrders(orders);
     }
 
     public void showOrdersContaining(String keyword) {
@@ -34,6 +36,6 @@ public class OrderScreen {
                 found.add(order);
             }
         }
-        coolLib.DisplayOrders(found.toArray(new String[0]));
+        display.displayOrders(found);
     }
 }

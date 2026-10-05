@@ -3,14 +3,14 @@ package ge.edu.ug.patterns.structural.adapter.deliveryapp;
 import ge.edu.ug.testutil.ConsoleCapture;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// OrderScreen can only ever print through CoolLib: there is no way to give it a different
-// display (plain console, a test double) without editing every show...() method.
+// The same OrderScreen works with our plain DeliveryApp or, through the adapter, with CoolLib.
 class OrderScreenTest {
 
-    private OrderScreen screen() {
-        OrderScreen screen = new OrderScreen();
+    private OrderScreen screen(IDeliveryApp display) {
+        OrderScreen screen = new OrderScreen(display);
         screen.addMenu("Khinkali");
         screen.addMenu("Khachapuri");
         screen.addOrder("Table 1: Khinkali x10");
@@ -20,7 +20,7 @@ class OrderScreenTest {
 
     @Test
     void showsMenusAndOrdersThroughCoolLib() {
-        OrderScreen screen = screen();
+        OrderScreen screen = screen(new CoolLibAdapter(new CoolLib()));
 
         String out = ConsoleCapture.run(() -> {
             screen.showMenus();
@@ -33,10 +33,20 @@ class OrderScreenTest {
 
     @Test
     void filtersOrders() {
-        OrderScreen screen = screen();
+        OrderScreen screen = screen(new CoolLibAdapter(new CoolLib()));
 
         String out = ConsoleCapture.run(() -> screen.showOrdersContaining("Khinkali"));
 
         assertTrue(out.contains("Fancy orders: [Table 1: Khinkali x10]"));
+    }
+
+    @Test
+    void sameScreenWorksWithPlainDisplay() {
+        OrderScreen screen = screen(new DeliveryApp());
+
+        String out = ConsoleCapture.run(screen::showMenus);
+
+        assertTrue(out.contains("[Khinkali, Khachapuri]"));
+        assertFalse(out.contains("Fancy"));
     }
 }
