@@ -1,13 +1,17 @@
 package ge.edu.ug.solid.dip.notifications;
 
 public class NotificationManager {
-    SmsService smsService;
+    private NotificationService senderService;
 
-    public NotificationManager(SmsService smsService) {
-        this.smsService = smsService;
+    public NotificationManager(NotificationService senderService) {
+        this.senderService = senderService;
     }
 
-    void notify(String recipient, String title, String message) {
-        smsService.send(recipient, title, message);
+    public String send(String recipient, String title, String text) {
+        return senderService.send(recipient, title, text);
+    }
+
+    public void setSenderService(NotificationService senderService) {
+        this.senderService = senderService;
     }
 }

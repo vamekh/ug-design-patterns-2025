@@ -1,8 +1,11 @@
 package ge.edu.ug.solid.dip.notifications;
 
-public class SmsService {
-    public void send(String recipient, String title, String message) {
-        SmsNotification sms = new SmsNotification(recipient, title, message);
+public class SmsService implements NotificationService {
+    @Override
+    public String send(String recipient, String title, String text) {
+        String smsBody = title + "\n" + text;
+        String sms = String.format("\tRecipient: %s\n\tMessage: %s\n", recipient, smsBody.replace("\n", "↵"));
         System.out.printf("Sending sms...\n%s\n", sms);
+        return sms;
     }
 }
