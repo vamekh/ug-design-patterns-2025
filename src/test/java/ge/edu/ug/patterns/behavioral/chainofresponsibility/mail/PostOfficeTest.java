@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// PROBLEM: every scenario goes through the whole PostOffice.accept(); there is
-// no way to run a single check, or to build a different set of checks, without editing it.
 class PostOfficeTest {
 
     private static final String STAMP = "22 year anniversary of UG";
@@ -54,5 +52,22 @@ class PostOfficeTest {
 
         assertFalse(postOffice.accept(new Envelope("Fake stamp", UG, HOME, "Hello")));
         assertEquals(0, scans[0]);
+    }
+
+    @Test
+    void validatorAtTheEndOfTheChainPassesTheEnvelope() {
+        // ContentValidator used to call next.handle() directly -> NPE when it was last
+        EnvelopeValidator content = new ContentValidator();
+
+        assertTrue(content.handle(new Envelope(STAMP, UG, HOME, "Hello")));
+    }
+
+    @Test
+    void courierReusesOnlyTheAddressChecks() {
+        EnvelopeValidator courier = new SenderAddressValidator();
+        courier.setNext(new ReceiverAddressValidator());
+
+        assertTrue(courier.handle(new Envelope("no stamp needed", UG, HOME, "")));
+        assertFalse(courier.handle(new Envelope("no stamp needed", "", HOME, "")));
     }
 }
