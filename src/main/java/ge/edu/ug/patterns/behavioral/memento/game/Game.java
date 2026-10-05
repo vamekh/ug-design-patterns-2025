@@ -1,8 +1,6 @@
 package ge.edu.ug.patterns.behavioral.memento.game;
 
-// PROBLEM: to let HistoryManager take snapshots, Game exposes a getter AND a setter for every field.
-// Anyone can now set health to 1000 or bullets to -5, and every new field must be copied by hand
-// in HistoryManager (which already forgot bullets).
+// Originator: the only class that can create a Memento and read it back.
 public class Game {
     private int health;
     private int shooterPosition;
@@ -25,28 +23,26 @@ public class Game {
         shooterPosition = newPosition;
     }
 
-    public int getHealth() {
-        return health;
+    public Memento save() {
+        return new Memento(health, shooterPosition, bullets);
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void restore(Memento memento) {
+        this.health = memento.health;
+        this.shooterPosition = memento.shooterPosition;
+        this.bullets = memento.bullets;
+    }
+
+    public int getHealth() {
+        return health;
     }
 
     public int getShooterPosition() {
         return shooterPosition;
     }
 
-    public void setShooterPosition(int shooterPosition) {
-        this.shooterPosition = shooterPosition;
-    }
-
     public int getBullets() {
         return bullets;
-    }
-
-    public void setBullets(int bullets) {
-        this.bullets = bullets;
     }
 
     @Override
@@ -56,5 +52,18 @@ public class Game {
                 ", shooterPosition=" + shooterPosition +
                 ", bullets=" + bullets +
                 "}";
+    }
+
+    // Memento: opaque to everyone else. Private fields and constructor are reachable only from Game.
+    public static final class Memento {
+        private final int health;
+        private final int shooterPosition;
+        private final int bullets;
+
+        private Memento(int health, int shooterPosition, int bullets) {
+            this.health = health;
+            this.shooterPosition = shooterPosition;
+            this.bullets = bullets;
+        }
     }
 }

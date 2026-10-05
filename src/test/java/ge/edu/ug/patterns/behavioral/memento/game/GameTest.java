@@ -3,13 +3,13 @@ package ge.edu.ug.patterns.behavioral.memento.game;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// PROBLEM: restoring works only for the fields HistoryManager remembered to copy,
-// and the public setters let any code put Game into an impossible state.
 class GameTest {
 
     @Test
-    void undoRestoresCopiedFieldsButForgetsBullets() {
+    void undoRestoresTheWholeState() {
         Game game = new Game(100, 0);
         game.shoot();
         game.changePosition(5);
@@ -25,13 +25,22 @@ class GameTest {
 
         assertEquals(95, game.getHealth());
         assertEquals(5, game.getShooterPosition());
-        assertEquals(7, game.getBullets());    // BUG: should be 9, bullets were never saved
+        assertEquals(9, game.getBullets());    // Game copies its own fields, nothing is forgotten
     }
 
     @Test
-    void settersBreakEncapsulation() {
+    void undoWorksAsAStack() {
         Game game = new Game(100, 0);
-        game.setBullets(-5);                   // compiles fine: nothing protects Game's invariants
-        assertEquals(-5, game.getBullets());
+        HistoryManager history = new HistoryManager();
+        history.save(game);
+        game.takeDamage(10);
+        history.save(game);
+        game.takeDamage(10);
+
+        assertTrue(history.undo(game));
+        assertEquals(90, game.getHealth());
+        assertTrue(history.undo(game));
+        assertEquals(100, game.getHealth());
+        assertFalse(history.undo(game));       // nothing left to undo
     }
 }

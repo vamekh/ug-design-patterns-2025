@@ -3,30 +3,17 @@ package ge.edu.ug.patterns.behavioral.memento.game;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-// The caretaker has to know Game's internals and copies them field by field.
+// Caretaker: stores mementos without ever looking inside them.
 public class HistoryManager {
-    private final Deque<GameSnapshot> history = new ArrayDeque<>();
+    private final Deque<Game.Memento> history = new ArrayDeque<>();
 
     public void save(Game game) {
-        history.push(new GameSnapshot(game.getHealth(), game.getShooterPosition()));
-        // bullets forgotten: nobody updated this line when the field was added
+        history.push(game.save());
     }
 
     public boolean undo(Game game) {
         if (history.isEmpty()) return false;
-        GameSnapshot snapshot = history.pop();
-        game.setHealth(snapshot.health);
-        game.setShooterPosition(snapshot.shooterPosition);
+        game.restore(history.pop());
         return true;
-    }
-
-    private static class GameSnapshot {
-        private final int health;
-        private final int shooterPosition;
-
-        GameSnapshot(int health, int shooterPosition) {
-            this.health = health;
-            this.shooterPosition = shooterPosition;
-        }
     }
 }
