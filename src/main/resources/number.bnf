@@ -1,0 +1,3 @@
+<palindrom> ::= <digit> | <digit>[1]<palindrom><digit>[2] | <digit>[1]<digit>[2]
+predicate function: digit[1] == digit[2]
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"

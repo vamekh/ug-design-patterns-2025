@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// The answers are right, but the language being recognised is only implied by
-// index arithmetic in PalindromeChecker; there is no structure matching the grammar.
 class PalindromeCheckerTest {
 
     @Test
@@ -30,5 +28,17 @@ class PalindromeCheckerTest {
         assertFalse(PalindromeChecker.isPalindrome(""));
         assertFalse(PalindromeChecker.isPalindrome("1a1"));
         assertFalse(PalindromeChecker.isPalindrome("aba"));
+    }
+
+    @Test
+    void testTreeBuiltByHand() {
+        // "1 [ 2 3 2 ] 1"  =>  Wrapped(1, Wrapped(2, Digit(3), 2), 1)
+        PalindromeExpression tree = new WrappedPalindrome(
+                new DigitExpression(0),
+                new WrappedPalindrome(new DigitExpression(1), new DigitExpression(2), new DigitExpression(3)),
+                new DigitExpression(4));
+
+        assertTrue(tree.interpret(new Context("12321")));
+        assertFalse(tree.interpret(new Context("12322")));
     }
 }

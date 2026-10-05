@@ -1,28 +1,27 @@
 package ge.edu.ug.patterns.behavioral.interpreter.palindrome;
 
-// Validation and the palindrome rule are tangled together with two moving indexes.
-// The grammar (single digit, two equal digits, digit + palindrome + same digit)
-// is nowhere visible, so changing or extending the language means rewriting this loop.
+// Client: builds the syntax tree for the grammar and interprets it on the input
+//   <palindrom> ::= <digit> | <digit>[1] <palindrom> <digit>[2] | <digit>[1] <digit>[2]
+//   predicate:   digit[1] == digit[2]
+//   <digit>     ::= "0" | "1" | ... | "9"
 public class PalindromeChecker {
 
     public static boolean isPalindrome(String digits) {
         if (digits == null || digits.isEmpty()) {
             return false;
         }
-        int i = 0;
-        int j = digits.length() - 1;
-        while (i <= j) {
-            char first = digits.charAt(i);
-            char last = digits.charAt(j);
-            if (first < '0' || first > '9' || last < '0' || last > '9') {
-                return false;
-            }
-            if (first != last) {
-                return false;
-            }
-            i++;
-            j--;
+        PalindromeExpression expression = build(0, digits.length() - 1);
+        return expression.interpret(new Context(digits));
+    }
+
+    // picks the grammar alternative that matches the span [from, to]
+    static PalindromeExpression build(int from, int to) {
+        if (from == to) {
+            return new DigitExpression(from);
         }
-        return true;
+        if (to - from == 1) {
+            return new TwoDigitPalindrome(new DigitExpression(from), new DigitExpression(to));
+        }
+        return new WrappedPalindrome(new DigitExpression(from), build(from + 1, to - 1), new DigitExpression(to));
     }
 }
