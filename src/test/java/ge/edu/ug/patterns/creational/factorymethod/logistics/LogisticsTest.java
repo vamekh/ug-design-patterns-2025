@@ -2,16 +2,29 @@ package ge.edu.ug.patterns.creational.factorymethod.logistics;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+
 public class LogisticsTest {
-    // The Factory Method pattern is needed here because:
-    // 1. The LogisticsCompany creates different types of Transport objects (Ship, Truck)
-    // 2. Object creation logic is hardcoded in the client class, making it difficult to extend
-    // 3. The pattern would help delegate object creation to subclasses, making the system more flexible
-    // 4. New transport types could be added without modifying existing client code
+    // This code uses the Factory Method pattern:
+    // 1. Transport is the Product, Truck and Ship are Concrete Products
+    // 2. Logistics is the Creator: planDelivery() uses the factory method createTransport()
+    // 3. RoadLogistics and SeaLogistics are Concrete Creators overriding only the factory method
+    // 4. The client picks a Logistics once and never names a concrete Transport
 
     @Test
     public void testFactoryMethod() {
-        LogisticsCompany company = new LogisticsCompany();
-        company.deliver("Kutaisi", "Books");
+        Logistics logistics = new RoadLogistics();
+
+        assertInstanceOf(Truck.class, logistics.createTransport());
+        assertEquals("Delivering Books to Kutaisi by truck...", logistics.planDelivery("Kutaisi", "Books"));
+    }
+
+    @Test
+    public void testSeaLogistics() {
+        Logistics logistics = new SeaLogistics();
+
+        assertInstanceOf(Ship.class, logistics.createTransport());
+        assertEquals("Delivering Books to overseas by ship...", logistics.planDelivery("overseas", "Books"));
     }
 }
