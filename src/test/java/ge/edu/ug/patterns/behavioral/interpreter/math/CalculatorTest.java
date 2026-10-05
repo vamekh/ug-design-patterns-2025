@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// The simple shapes work, but only thanks to the order of the split() calls.
-// Parentheses are not supported at all, and there is no expression tree we could reuse.
 class CalculatorTest {
 
     @Test
@@ -26,12 +24,14 @@ class CalculatorTest {
     }
 
     @Test
-    void testParenthesesAreNotSupported() {
-        assertThrows(UnsupportedOperationException.class, () -> Calculator.eval("(2 + 3) * 4"));
+    void testParentheses() {
+        assertEquals(20.0, Calculator.eval("(2 + 3) * 4"), 0.001);
+        assertEquals(64.0, Calculator.eval("(2 ^ 3) ^ 2"), 0.001);
     }
 
     @Test
     void testInvalidInput() {
         assertThrows(IllegalArgumentException.class, () -> Calculator.eval("2 + abc"));
+        assertThrows(IllegalArgumentException.class, () -> Calculator.eval("(2 + 3"));
     }
 }
