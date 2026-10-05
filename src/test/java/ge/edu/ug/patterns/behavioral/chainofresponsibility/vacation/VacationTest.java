@@ -8,8 +8,6 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// PROBLEM: the behaviour is correct, but every rule is tangled inside
-// VacationService.approve(); there is no way to test or reuse one check on its own.
 class VacationTest {
 
     private final VacationService service = new VacationService(Map.of(
@@ -41,5 +39,32 @@ class VacationTest {
     @Test
     void unknownEmployeeGetsTheDefaultAllowance() {
         assertTrue(service.approve(new Vacation("Anna", LocalDate.of(2026, 7, 1), 14)));
+    }
+
+    @Test
+    void eachCheckerWorksOnItsOwn() {
+        VacationChecker checker = new VacationRemainingDaysChecker(Map.of("Mary", 5));
+
+        assertTrue(checker.handle(new Vacation("Mary", LocalDate.of(2026, 7, 1), 5)));
+        assertFalse(checker.handle(new Vacation("Mary", LocalDate.of(2026, 7, 1), 6)));
+    }
+
+    @Test
+    void newRuleIsAddedWithoutEditingExistingCheckers() {
+        VacationChecker noSummerVacations = new VacationChecker() {
+            @Override
+            public boolean handle(Vacation vacation) {
+                if (vacation.startDate.getMonthValue() == 8) {
+                    return false;
+                }
+                return handleNext(vacation);
+            }
+        };
+        VacationChecker chain = new VacationLengthChecker();
+        chain.setNext(noSummerVacations)
+                .setNext(new VacationRemainingDaysChecker(Map.of()));
+
+        assertTrue(chain.handle(new Vacation("Nick", LocalDate.of(2026, 7, 1), 5)));
+        assertFalse(chain.handle(new Vacation("Nick", LocalDate.of(2026, 8, 1), 5)));
     }
 }
