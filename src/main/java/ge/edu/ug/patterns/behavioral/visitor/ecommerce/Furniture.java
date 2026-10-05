@@ -1,5 +1,6 @@
 package ge.edu.ug.patterns.behavioral.visitor.ecommerce;
 
+// Concrete Element
 public class Furniture implements Product {
     private final double price;
 
@@ -13,17 +14,7 @@ public class Furniture implements Product {
     }
 
     @Override
-    public double calculateTaxes() {
-        return 0;
-    }
-
-    @Override
-    public double getMaxDiscount() {
-        return 0;
-    }
-
-    @Override
-    public double calculateShipping() {
-        return 50.0;
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

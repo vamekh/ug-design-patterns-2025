@@ -3,6 +3,7 @@ package ge.edu.ug.patterns.behavioral.visitor.ecommerce;
 import java.util.ArrayList;
 import java.util.List;
 
+// Client: runs a visitor over the whole cart
 public class OnlineShop {
     private final List<Product> cart = new ArrayList<>();
 
@@ -19,26 +20,26 @@ public class OnlineShop {
     }
 
     public double totalTaxes() {
-        double total = 0;
-        for (Product product : cart) {
-            total += product.calculateTaxes();
-        }
-        return total;
+        TaxVisitor visitor = new TaxVisitor();
+        visitAll(visitor);
+        return visitor.getTotal();
     }
 
     public double totalDiscount() {
-        double total = 0;
-        for (Product product : cart) {
-            total += product.getMaxDiscount();
-        }
-        return total;
+        DiscountVisitor visitor = new DiscountVisitor();
+        visitAll(visitor);
+        return visitor.getTotal();
     }
 
     public double totalShipping() {
-        double total = 0;
+        ShippingVisitor visitor = new ShippingVisitor();
+        visitAll(visitor);
+        return visitor.getTotal();
+    }
+
+    public void visitAll(Visitor visitor) {
         for (Product product : cart) {
-            total += product.calculateShipping();
+            product.accept(visitor);
         }
-        return total;
     }
 }
