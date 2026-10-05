@@ -6,44 +6,48 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// There is no single entry point: the client must know all four devices and call
-// seven methods in exactly the right order to start a film and four more (reversed)
-// to stop it. Every client that wants to watch a film repeats this choreography.
+// The client makes two calls; the facade knows the devices and the right order.
 class HomeTheatreTest {
-    private Projector projector;
-    private RollupScreen screen;
-    private DvdPlayer dvdPlayer;
-    private SoundSystem soundSystem;
+    private HomeTheatreFacade homeTheatre;
 
     @BeforeEach
     void setUp() {
-        projector = new Projector();
-        screen = new RollupScreen();
-        dvdPlayer = new DvdPlayer();
-        soundSystem = new SoundSystem();
+        homeTheatre = new HomeTheatreFacade(
+                new Projector(),
+                new RollupScreen(),
+                new DvdPlayer(),
+                new SoundSystem()
+        );
     }
 
     @Test
     void watchFilm() {
         String out = ConsoleCapture.run(() -> {
-            screen.rollDown();
-            projector.on();
-            soundSystem.on();
-            soundSystem.setVolume(50);
-            dvdPlayer.on();
-            projector.setInput("DVD");
-            dvdPlayer.play("Mulholland Dr.");
+            homeTheatre.beginFilmSession("Mulholland Dr.");
 
-            dvdPlayer.off();
-            soundSystem.off();
-            projector.off();
-            screen.rollUp();
+            homeTheatre.endFilmSession();
         });
 
         assertInOrder(out,
                 "Screen rolled down", "Projector on", "Sound system on", "Sound system set volume to 50",
                 "DvdPlayer on", "Projector input set to DVD", "DvdPlayer playing Mulholland Dr.",
                 "DvdPlayer off", "Sound system off", "Projector off", "Screen rolled up");
+    }
+
+    @Test
+    void bannerFitsLongFilmNames() {
+        String longTitle = "The Lord of the Rings: The Return of the King";
+
+        String out = ConsoleCapture.run(() -> homeTheatre.beginFilmSession(longTitle));
+
+        assertTrue(out.contains("|The Lord of the Rings: Th...|"), out);
+    }
+
+    @Test
+    void bannerCentersShortFilmNames() {
+        String out = ConsoleCapture.run(() -> homeTheatre.beginFilmSession("Up"));
+
+        assertTrue(out.contains("|" + " ".repeat(13) + "Up" + " ".repeat(13) + "|"), out);
     }
 
     private static void assertInOrder(String out, String... steps) {
