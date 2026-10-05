@@ -1,7 +1,14 @@
 package ge.edu.ug.solid.dip.bulbswitch;
 
-public class Vent {
+public class Vent implements Switchable {
+    private boolean on;
+
     public void flip(boolean on) {
-        System.out.println("Bulb is " + (on ? "on" : "off"));
+        this.on = on;
+        System.out.println("Vent is " + (on ? "on" : "off"));
+    }
+
+    public boolean isOn() {
+        return on;
     }
 }
