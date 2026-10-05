@@ -2,14 +2,12 @@ package ge.edu.ug.patterns.behavioral.templatemethod.beverage;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// PROBLEM: the same recipe lives in two prepare() methods. These tests pin down
-// how the copies drifted: Coffee skips "Pouring into cup", and only Coffee
-// supports "no condiments" because the option was added to one copy only.
 class BeverageTest {
 
     @Test
@@ -20,17 +18,23 @@ class BeverageTest {
     }
 
     @Test
-    void coffeeDriftedFromTheRecipe() {
+    void coffeeFollowsTheSameRecipe() {
         List<String> steps = new Coffee().prepare();
 
-        assertEquals(List.of("Boiling water", "Dripping coffee through filter", "Adding sugar and milk"), steps);
-        assertFalse(steps.contains("Pouring into cup"), "the copy-pasted recipe forgot a step");
+        assertEquals(List.of("Boiling water", "Dripping coffee through filter", "Pouring into cup", "Adding sugar and milk"), steps);
     }
 
     @Test
-    void blackCoffeeSkipsCondiments() {
+    void blackCoffeeSkipsCondimentsThroughTheHook() {
         List<String> steps = new Coffee(false).prepare();
 
-        assertEquals(List.of("Boiling water", "Dripping coffee through filter"), steps);
+        assertEquals(List.of("Boiling water", "Dripping coffee through filter", "Pouring into cup"), steps);
+    }
+
+    @Test
+    void templateMethodCannotBeOverridden() throws NoSuchMethodException {
+        int modifiers = HotBeverage.class.getMethod("prepare").getModifiers();
+
+        assertTrue(Modifier.isFinal(modifiers));
     }
 }
