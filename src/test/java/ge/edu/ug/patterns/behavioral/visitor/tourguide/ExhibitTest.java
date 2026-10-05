@@ -6,8 +6,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// Works, but each activity is spread over all exhibit classes.
-// To let the photographer in we would have to add photograph() to Exhibit, Art, Artifact and WaxFigure.
 class ExhibitTest {
 
     private final List<Exhibit> exhibits = List.of(
@@ -16,9 +14,14 @@ class ExhibitTest {
             new WaxFigure("Albert Einstein")
     );
 
+    private List<String> tour(ExhibitVisitor visitor) {
+        exhibits.forEach(exhibit -> exhibit.accept(visitor));
+        return visitor.getNotes();
+    }
+
     @Test
     void testGuiding() {
-        List<String> notes = exhibits.stream().map(Exhibit::guide).toList();
+        List<String> notes = tour(new ExhibitGuidingVisitor());
 
         assertEquals(List.of(
                 "The tour guide talks about the painter of Starry Night and the art era",
@@ -29,12 +32,23 @@ class ExhibitTest {
 
     @Test
     void testCleaning() {
-        List<String> notes = exhibits.stream().map(Exhibit::clean).toList();
+        List<String> notes = tour(new ExhibitCleaningVisitor());
 
         assertEquals(List.of(
                 "The cleaning staff carefully cleans the art piece Starry Night, ensuring no damage is done",
                 "The cleaning staff carefully cleans the artifact Ancient Egyptian Sarcophagus, ensuring no damage is done",
                 "Wax figure Albert Einstein is skipped. Cleaning not allowed"
+        ), notes);
+    }
+
+    @Test
+    void testPhotographingIsJustANewVisitor() {
+        List<String> notes = tour(new ExhibitPhotographingVisitor());
+
+        assertEquals(List.of(
+                "The photographer shoots Starry Night without flash to protect the paint",
+                "The photographer shoots Ancient Egyptian Sarcophagus from every side",
+                "The photographer takes a selfie with Albert Einstein"
         ), notes);
     }
 }

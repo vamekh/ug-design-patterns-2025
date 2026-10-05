@@ -1,5 +1,6 @@
 package ge.edu.ug.patterns.behavioral.visitor.tourguide;
 
+// Concrete Element
 public class WaxFigure implements Exhibit {
     private final String name;
 
@@ -12,12 +13,7 @@ public class WaxFigure implements Exhibit {
     }
 
     @Override
-    public String clean() {
-        return "Wax figure " + name + " is skipped. Cleaning not allowed";
-    }
-
-    @Override
-    public String guide() {
-        return "The tour guide talks about the life of " + name + " and how the wax figure was made";
+    public void accept(ExhibitVisitor visitor) {
+        visitor.visit(this);
     }
 }

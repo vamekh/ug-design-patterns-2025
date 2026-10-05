@@ -1,5 +1,6 @@
 package ge.edu.ug.patterns.behavioral.visitor.tourguide;
 
+// Concrete Element
 public class Art implements Exhibit {
     private final String name;
 
@@ -12,12 +13,7 @@ public class Art implements Exhibit {
     }
 
     @Override
-    public String clean() {
-        return "The cleaning staff carefully cleans the art piece " + name + ", ensuring no damage is done";
-    }
-
-    @Override
-    public String guide() {
-        return "The tour guide talks about the painter of " + name + " and the art era";
+    public void accept(ExhibitVisitor visitor) {
+        visitor.visit(this);
     }
 }
