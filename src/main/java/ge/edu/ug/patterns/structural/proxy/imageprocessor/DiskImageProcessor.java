@@ -1,5 +1,6 @@
 package ge.edu.ug.patterns.structural.proxy.imageprocessor;
 
+// Real Subject: loads the image from disk as soon as it is created
 public class DiskImageProcessor implements ImageProcessor {
     // counts expensive disk loads, so tests can see how many happened
     private static int loadCount = 0;
