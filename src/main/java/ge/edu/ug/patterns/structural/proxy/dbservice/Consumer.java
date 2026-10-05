@@ -1,9 +1,10 @@
 package ge.edu.ug.patterns.structural.proxy.dbservice;
 
+// Client: depends on IDbService, does not know how many proxies are in front of DbService
 public class Consumer {
-    DbService service;
+    IDbService service;
 
-    public Consumer(DbService service) {
+    public Consumer(IDbService service) {
         this.service = service;
     }
 
