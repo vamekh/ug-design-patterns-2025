@@ -5,12 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// ReportPrinter works only because it checks for null everywhere.
-// Any other caller that forgets the check crashes (see testForgottenNullCheck).
 class EvaluationTest {
 
     private final List<StudentEvaluation> evaluations = List.of(
@@ -43,10 +40,11 @@ class EvaluationTest {
     }
 
     @Test
-    void testForgottenNullCheck() {
+    void testNotEvaluatedStudentGetsNullObject() {
         StudentEvaluation notEvaluated = evaluations.get(2);
 
-        assertNull(notEvaluated.getEvaluation());
-        assertThrows(NullPointerException.class, () -> notEvaluated.getEvaluation().getComment());
+        assertSame(EvaluationNullObject.getInstance(), notEvaluated.getEvaluation());
+        assertEquals("Not yet evaluated!", notEvaluated.getEvaluation().getComment());
+        assertEquals(0, notEvaluated.getEvaluation().getEvaluation());
     }
 }

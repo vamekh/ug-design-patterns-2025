@@ -11,14 +11,14 @@ public class StudentEvaluation {
 
     public StudentEvaluation(Integer ugCode) {
         this.ugCode = ugCode;
-        this.evaluation = null; // not evaluated yet
+        this.evaluation = EvaluationNullObject.getInstance(); // not evaluated yet
     }
 
     public Integer getUgCode() {
         return ugCode;
     }
 
-    // may return null! every caller has to remember to check
+    // never returns null
     public Evaluation getEvaluation() {
         return evaluation;
     }
