@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// Every order is a separate class. A latte with double milk does not exist yet:
-// to sell it we would have to write CoffeeWithDoubleMilk (and CoffeeWithDoubleMilkAndSugar...).
+// Orders are composed at runtime by wrapping decorators; no class per combination.
 class CoffeeTest {
 
     @Test
@@ -17,15 +16,22 @@ class CoffeeTest {
 
     @Test
     void coffeeWithMilk() {
-        ICoffee latte = new CoffeeWithMilk();
+        ICoffee latte = new MilkDecorator(new Coffee());
         assertEquals(300, latte.getCost());
         assertEquals("Simple coffee with milk", latte.getDescription());
     }
 
     @Test
     void coffeeWithMilkAndSugar() {
-        ICoffee coffee = new CoffeeWithMilkAndSugar();
+        ICoffee coffee = new SugarDecorator(new MilkDecorator(new Coffee()));
         assertEquals(350, coffee.getCost());
         assertEquals("Simple coffee with milk with sugar", coffee.getDescription());
+    }
+
+    @Test
+    void doubleMilkNeedsNoNewClass() {
+        ICoffee coffee = new MilkDecorator(new MilkDecorator(new Coffee()));
+        assertEquals(400, coffee.getCost());
+        assertEquals("Simple coffee with milk with milk", coffee.getDescription());
     }
 }
