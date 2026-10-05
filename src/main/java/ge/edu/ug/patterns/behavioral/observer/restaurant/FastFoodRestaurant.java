@@ -1,21 +1,37 @@
 package ge.edu.ug.patterns.behavioral.observer.restaurant;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-// PROBLEM: the kitchen only records which orders are ready. Every HungryPerson has to
-// keep looking at the screen (isReady) to find out, so someone must drive those checks
-// in a loop, and most checks are wasted "not yet" answers.
-public class FastFoodRestaurant {
+// Concrete Subject: the kitchen announces every prepared order
+public class FastFoodRestaurant implements Observable {
 
-    private final Set<Integer> preparedOrders = new HashSet<>();
+    private final List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void subscribe(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void unsubscribe(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(KitchenNotification notification) {
+        // Iterate over a copy: an observer may unsubscribe while being notified
+        for (Observer observer : List.copyOf(observers)) {
+            observer.notify(notification);
+        }
+    }
 
     public void markOrderPrepared(int receiptNumber) {
         System.out.println("Kitchen: order " + receiptNumber + " is ready");
-        preparedOrders.add(receiptNumber);
+        notifyObservers(new KitchenNotification(receiptNumber));
     }
 
-    public boolean isReady(int receiptNumber) {
-        return preparedOrders.contains(receiptNumber);
+    public int getObserverCount() {
+        return observers.size();
     }
 }
