@@ -3,26 +3,18 @@ package ge.edu.ug.patterns.behavioral.observer.jobseeker;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JobSeeker {
+// Concrete Observer
+public class JobSeeker implements Observer {
     private String name;
-    private final EmploymentAgency agency;
     private final List<JobPost> receivedJobs = new ArrayList<>();
 
-    public JobSeeker(String name, EmploymentAgency agency) {
+    public JobSeeker(String name) {
         this.name = name;
-        this.agency = agency;
     }
 
-    // Polling: the job seeker has to call this again and again
-    public void checkForNewJobs() {
-        JobPost latestJob = agency.getLatestJob();
-        if (latestJob != null && !receivedJobs.contains(latestJob)) {
-            onJobPosted(latestJob);
-        }
-    }
-
-    private void onJobPosted(JobPost jobPost) {
-        System.out.printf("I'm %s and I found out that a new job has been posted: %s\n", name, jobPost.title);
+    @Override
+    public void onJobPosted(JobPost jobPost) {
+        System.out.printf("I'm %s and I'm notified that a new job has been posted: %s\n", name, jobPost.title);
         receivedJobs.add(jobPost);
     }
 

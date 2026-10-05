@@ -1,17 +1,29 @@
 package ge.edu.ug.patterns.behavioral.observer.jobseeker;
 
-// PROBLEM: the agency tells nobody about new jobs. Every JobSeeker has to keep
-// asking getLatestJob(). Checking when nothing changed is wasted work, and if two
-// jobs are posted between two checks, the first one is never seen.
-public class EmploymentAgency {
-    private JobPost latestJob;
+import java.util.ArrayList;
+import java.util.List;
+
+// Concrete Subject: pushes every new job to its subscribers
+public class EmploymentAgency implements Observable {
+    private final List<Observer> observers = new ArrayList<>();
 
     public void postJob(JobPost jobPost) {
         System.out.printf("Job has been posted! %s\n", jobPost.title);
-        latestJob = jobPost;
+        notifyObservers(jobPost);
     }
 
-    public JobPost getLatestJob() {
-        return latestJob;
+    @Override
+    public void subscribe(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void unsubscribe(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(JobPost jobPost) {
+        observers.forEach(observer -> observer.onJobPosted(jobPost));
     }
 }
