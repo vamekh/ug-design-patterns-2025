@@ -1,7 +1,6 @@
 package ge.edu.ug.patterns.creational.builder.car;
 
-// PROBLEM: 7 positional constructor arguments, most of them optional.
-// Callers pass null for unknown values and can silently swap year/price/mileage/seats (all Integer).
+// Product (built by CarDtoBuilder)
 public class CarDto {
     private final String brand;
     private final String model;
@@ -11,7 +10,7 @@ public class CarDto {
     private final Integer mileage;
     private final Integer seats;
 
-    public CarDto(String brand, String model, String color, Integer year, Integer price, Integer mileage, Integer seats) {
+    CarDto(String brand, String model, String color, Integer year, Integer price, Integer mileage, Integer seats) {
         this.brand = brand;
         this.model = model;
         this.color = color;

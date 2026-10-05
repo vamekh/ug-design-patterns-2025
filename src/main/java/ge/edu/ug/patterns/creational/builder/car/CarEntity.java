@@ -1,5 +1,6 @@
 package ge.edu.ug.patterns.creational.builder.car;
 
+// Product (built by CarEntityBuilder)
 public class CarEntity {
     private final Long id;
     private final String brand;
@@ -10,7 +11,7 @@ public class CarEntity {
     private final Integer mileage;
     private final Integer seats;
 
-    public CarEntity(Long id, String brand, String model, String color, Integer year, Integer price, Integer mileage, Integer seats) {
+    CarEntity(Long id, String brand, String model, String color, Integer year, Integer price, Integer mileage, Integer seats) {
         this.id = id;
         this.brand = brand;
         this.model = model;

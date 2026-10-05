@@ -5,15 +5,19 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-// PROBLEM: every car is a row of positional arguments full of nulls.
-// The "popular model" presets (Subaru Forester, Honda Fit) are copy-pasted for CarDto AND CarEntity,
-// so changing a preset means finding every copy.
+// Builder: only the known values are set, by name.
+// Director: each popular model preset is written once and reused for CarDto and CarEntity.
 class CarTest {
+
+    PopularModelsDirector director = new PopularModelsDirector();
 
     @Test
     public void testCustomCar() {
-        // which null is price and which is mileage?
-        CarDto car = new CarDto("Honda", "Fit", null, 2014, null, null, null);
+        CarDto car = new CarDtoBuilder()
+                .brand("Honda")
+                .model("Fit")
+                .year(2014)
+                .build();
 
         assertEquals(2014, car.getYear());
         assertNull(car.getPrice());
@@ -21,8 +25,9 @@ class CarTest {
 
     @Test
     public void testSubaruForesterDto() {
-        // preset copy #1
-        CarDto car = new CarDto("Subaru", "Forester", "Red", null, null, null, 5);
+        CarDto car = director.buildSubaruForester(new CarDtoBuilder())
+                .color("Red")
+                .build();
 
         assertEquals("Forester", car.getModel());
         assertEquals(5, car.getSeats());
@@ -31,8 +36,10 @@ class CarTest {
 
     @Test
     public void testSubaruForesterEntity() {
-        // preset copy #2, with one more argument in front
-        CarEntity car = new CarEntity(1L, "Subaru", "Forester", "Blue", null, null, 50000, 5);
+        CarEntity car = director.buildSubaruForester(new CarEntityBuilder().id(1L))
+                .color("Blue")
+                .mileage(50000)
+                .build();
 
         assertEquals(1L, car.getId());
         assertEquals(5, car.getSeats());
@@ -41,7 +48,9 @@ class CarTest {
 
     @Test
     public void testHondaFitDto() {
-        CarDto car = new CarDto("Honda", "Fit", "White", null, null, null, 4);
+        CarDto car = director.buildHondaFit(new CarDtoBuilder())
+                .color("White")
+                .build();
 
         assertEquals("Honda", car.getBrand());
         assertEquals(4, car.getSeats());
@@ -49,7 +58,9 @@ class CarTest {
 
     @Test
     public void testHondaFitEntity() {
-        CarEntity car = new CarEntity(2L, "Honda", "Fit", null, 2018, null, null, 4);
+        CarEntity car = director.buildHondaFit(new CarEntityBuilder().id(2L))
+                .year(2018)
+                .build();
 
         assertEquals(2L, car.getId());
         assertEquals(2018, car.getYear());
