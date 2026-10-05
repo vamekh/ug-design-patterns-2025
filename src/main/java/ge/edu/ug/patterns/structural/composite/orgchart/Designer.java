@@ -1,19 +1,19 @@
 package ge.edu.ug.patterns.structural.composite.orgchart;
 
-public class Designer {
-    private final String name;
-    private final double salary;
+// Leaf
+public class Designer extends Employee {
 
     public Designer(String name, double salary) {
-        this.name = name;
-        this.salary = salary;
+        super(name, salary);
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public double getTotalSalary() {
+        return getSalary();
     }
 
-    public double getSalary() {
-        return salary;
+    @Override
+    public int getHeadcount() {
+        return 1;
     }
 }

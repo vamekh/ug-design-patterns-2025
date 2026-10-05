@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// PROBLEM: the client cannot ask an employee for its own total - it needs a Payroll that
-// type-checks every node. Manager.add(Object) even accepts things that are not employees.
 class OrgChartTest {
 
     private Manager buildOrg() {
@@ -20,21 +18,22 @@ class OrgChartTest {
 
     @Test
     void totalSalaryRollsUpThroughTheTree() {
-        Payroll payroll = new Payroll();
-        assertEquals(26700, payroll.getTotalSalary(buildOrg()));
+        assertEquals(26700, buildOrg().getTotalSalary());
     }
 
     @Test
     void headcountIncludesManagers() {
-        Payroll payroll = new Payroll();
-        assertEquals(5, payroll.getHeadcount(buildOrg()));
+        assertEquals(5, buildOrg().getHeadcount());
     }
 
     @Test
-    void unknownTypeIsSilentlyIgnored() {
-        Manager boss = new Manager("Boss", 1000).add("not an employee");
-        Payroll payroll = new Payroll();
-        assertEquals(1000, payroll.getTotalSalary(boss));
-        assertEquals(1, payroll.getHeadcount(boss));
+    void anySubtreeAnswersForItself() {
+        Employee teamLead = buildOrg().getSubordinates().get(0);
+        assertEquals(14200, teamLead.getTotalSalary());
+        assertEquals(3, teamLead.getHeadcount());
+
+        Employee designer = new Designer("Ana", 3500);
+        assertEquals(3500, designer.getTotalSalary());
+        assertEquals(1, designer.getHeadcount());
     }
 }

@@ -3,31 +3,38 @@ package ge.edu.ug.patterns.structural.composite.orgchart;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Manager {
-    private final String name;
-    private final double salary;
-    // Developers, Designers and Managers share no type, so the team is a List<Object>.
-    private final List<Object> subordinates = new ArrayList<>();
+// Composite: a manager is an employee that also has subordinates.
+public class Manager extends Employee {
+    private final List<Employee> subordinates = new ArrayList<>();
 
     public Manager(String name, double salary) {
-        this.name = name;
-        this.salary = salary;
+        super(name, salary);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public double getSalary() {
-        return salary;
-    }
-
-    public Manager add(Object subordinate) {
+    public Manager add(Employee subordinate) {
         subordinates.add(subordinate);
         return this;
     }
 
-    public List<Object> getSubordinates() {
+    public List<Employee> getSubordinates() {
         return subordinates;
+    }
+
+    @Override
+    public double getTotalSalary() {
+        double total = getSalary();
+        for (Employee subordinate : subordinates) {
+            total += subordinate.getTotalSalary();
+        }
+        return total;
+    }
+
+    @Override
+    public int getHeadcount() {
+        int count = 1;
+        for (Employee subordinate : subordinates) {
+            count += subordinate.getHeadcount();
+        }
+        return count;
     }
 }
