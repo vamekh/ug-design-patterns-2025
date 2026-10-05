@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// Both operations work, but each is spread over NumberExpression, AddExpression,
-// SubtractExpression and MultiplyExpression. A third operation means editing all four again.
 class ExpressionTest {
 
     @Test
@@ -16,7 +14,7 @@ class ExpressionTest {
                 new NumberExpression(2)
         );
 
-        assertEquals(14.0, expr.evaluate(), 0.001);
+        assertEquals(14.0, expr.accept(new EvaluateVisitor()), 0.001);
     }
 
     @Test
@@ -27,6 +25,34 @@ class ExpressionTest {
                 new AddExpression(new NumberExpression(2), new NumberExpression(1))
         );
 
-        assertEquals("((10 - 3) * (2 + 1))", expr.print());
+        assertEquals("((10 - 3) * (2 + 1))", expr.accept(new PrintVisitor()));
+    }
+
+    @Test
+    void testNewOperationIsJustANewVisitor() {
+        // counts the numbers in the tree, no expression class was edited
+        ExpressionVisitor<Integer> countNumbers = new ExpressionVisitor<>() {
+            public Integer visit(NumberExpression e) {
+                return 1;
+            }
+
+            public Integer visit(AddExpression e) {
+                return e.getLeft().accept(this) + e.getRight().accept(this);
+            }
+
+            public Integer visit(SubtractExpression e) {
+                return e.getLeft().accept(this) + e.getRight().accept(this);
+            }
+
+            public Integer visit(MultiplyExpression e) {
+                return e.getLeft().accept(this) + e.getRight().accept(this);
+            }
+        };
+        Expression expr = new MultiplyExpression(
+                new SubtractExpression(new NumberExpression(10), new NumberExpression(3)),
+                new AddExpression(new NumberExpression(2), new NumberExpression(1))
+        );
+
+        assertEquals(4, expr.accept(countNumbers));
     }
 }

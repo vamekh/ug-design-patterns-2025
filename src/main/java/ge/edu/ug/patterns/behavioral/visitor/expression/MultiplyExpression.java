@@ -1,5 +1,6 @@
 package ge.edu.ug.patterns.behavioral.visitor.expression;
 
+// Concrete Element
 public class MultiplyExpression implements Expression {
     private final Expression left;
     private final Expression right;
@@ -18,12 +19,7 @@ public class MultiplyExpression implements Expression {
     }
 
     @Override
-    public double evaluate() {
-        return left.evaluate() * right.evaluate();
-    }
-
-    @Override
-    public String print() {
-        return "(" + left.print() + " * " + right.print() + ")";
+    public <R> R accept(ExpressionVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 }

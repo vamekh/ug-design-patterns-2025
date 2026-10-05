@@ -1,9 +1,6 @@
 package ge.edu.ug.patterns.behavioral.visitor.expression;
 
-// Every operation on the tree (evaluate, print, ...) is a method here,
-// so adding a new one (e.g. derive or simplify) edits all four expression classes.
+// Element: the tree only knows how to accept a visitor
 public interface Expression {
-    double evaluate();
-
-    String print();
+    <R> R accept(ExpressionVisitor<R> visitor);
 }
