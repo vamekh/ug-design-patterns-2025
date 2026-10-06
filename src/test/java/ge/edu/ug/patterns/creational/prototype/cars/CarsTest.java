@@ -11,9 +11,9 @@ class CarsTest {
     @Test
     public void testCars() {
         List<Vehicle> vehicles = List.of(
-                new Car("BMW", "M3", "Red", "Electric", 300),
-                new Bus("Ikarus", "Dragon", "Red", "Diesel", 50),
-                new Car("Tesla", "Model S", "Red", "V8", 250)
+                new Car("BMW", "M3", "Red", new Engine(2000, "Electric"), 300),
+                new Bus("Ikarus", "Dragon", "Red", new Engine(3000, "Diesel"), 50),
+                new Car("Tesla", "Model S", "Red", new Engine(2000, "Electric"), 250)
         );
         List<Vehicle> duplicates = vehicles.stream().map(Vehicle::copy).toList();
         duplicates.forEach(System.out::println);
@@ -30,13 +30,13 @@ class CarsTest {
     @Test
     public void testRegistry() {
         Vehicle car1 = this.cache.getVehicle("family-car");
-        car1.setColor("SkyBlue");
+        car1.color = "SkyBlue";
         System.out.println("Typical family car with modified color " + car1);
         Vehicle car2 = this.cache.getVehicle("family-car");
         System.out.println("Typical family car with default color  " + car2);
 
         Assertions.assertNotSame(car1, car2);          // the registry hands out a fresh copy each time
-        Assertions.assertNotEquals(car1.getColor(), car2.getColor()); // changing a copy leaves the prototype untouched
+        Assertions.assertNotEquals(car1.color, car2.color); // changing a copy leaves the prototype untouched
     }
 
     @Test

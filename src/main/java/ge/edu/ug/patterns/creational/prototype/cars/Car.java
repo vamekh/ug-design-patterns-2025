@@ -3,7 +3,7 @@ package ge.edu.ug.patterns.creational.prototype.cars;
 public class Car extends Vehicle{
     private int topSpeed;
 
-    public Car(String brand, String model, String color, String engine, int topSpeed) {
+    public Car(String brand, String model, String color, Engine engine, int topSpeed) {
         super(brand, model, color, engine);
         this.topSpeed = topSpeed;
     }

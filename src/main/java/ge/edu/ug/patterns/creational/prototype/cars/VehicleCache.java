@@ -8,8 +8,8 @@ public class VehicleCache {
     private Map<String, Vehicle> cache = new HashMap<>();
 
     public VehicleCache() {
-        cache.put("sport-car", new Car("Ford", "Mustang", "Blue", "Gasoline", 300));
-        cache.put("family-car", new Car("Toyota", "Rav4", "White", "Hybrid", 150));
+        cache.put("sport-car", new Car("Ford", "Mustang", "Blue", new Engine(2000, "Gasoline"), 300));
+        cache.put("family-car", new Car("Toyota", "Rav4", "White", new Engine(1500, "Hybrid"), 150));
     }
 
     public Vehicle getVehicle(String key){

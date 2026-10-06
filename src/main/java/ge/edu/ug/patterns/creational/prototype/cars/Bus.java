@@ -3,7 +3,7 @@ package ge.edu.ug.patterns.creational.prototype.cars;
 public class Bus extends Vehicle{
     private int seats;
 
-    public Bus(String brand, String model, String color, String engine, int seats) {
+    public Bus(String brand, String model, String color, Engine engine, int seats) {
         super(brand, model, color, engine);
         this.seats = seats;
     }
