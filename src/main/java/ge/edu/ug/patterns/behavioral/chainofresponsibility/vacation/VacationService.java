@@ -20,7 +20,7 @@ public class VacationService {
         if (days >= MIN_DAYS) {
             if (days <= MAX_DAYS) {
                 System.out.println("✅ Vacation's requested length is valid.");
-                int daysRemaining = remainingDays.getOrDefault(vacation.employee, MAX_DAYS);
+                int daysRemaining = remainingDays.getOrDefault(vacation.getEmployee(), MAX_DAYS);
                 if (days <= daysRemaining) {
                     System.out.println("✅ Employee has enough days remaining for vacation.");
                     System.out.println("✅ No more checks to perform ✅");
