@@ -4,12 +4,12 @@ package ge.edu.ug.patterns.behavioral.templatemethod.beverage;
 public class Tea extends HotBeverage {
 
     @Override
-    protected void brew() {
-        step("Steeping the tea");
+    protected void addCondiments() {
+        System.out.println("Adding lemon");
     }
 
     @Override
-    protected void addCondiments() {
-        step("Adding lemon");
+    protected void addMainIngredient() {
+        System.out.println("Putting a tea bag into the cup...");
     }
 }

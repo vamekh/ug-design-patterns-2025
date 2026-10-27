@@ -13,17 +13,17 @@ public class Coffee extends HotBeverage {
     }
 
     @Override
-    protected void brew() {
-        step("Dripping coffee through filter");
-    }
-
-    @Override
     protected void addCondiments() {
-        step("Adding sugar and milk");
+        System.out.println("Adding sugar and milk");
     }
 
     @Override
     protected boolean wantsCondiments() {
         return withMilkAndSugar;
+    }
+
+    @Override
+    protected void addMainIngredient() {
+        System.out.println("Putting a cheap coffee into the cup...");
     }
 }
