@@ -9,6 +9,7 @@ public class HistoryManager {
 
     public void save(Game game) {
         history.push(game.save());
+        System.out.println(game);
     }
 
     public boolean undo(Game game) {

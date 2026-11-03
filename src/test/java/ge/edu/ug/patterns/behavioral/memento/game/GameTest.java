@@ -2,30 +2,33 @@ package ge.edu.ug.patterns.behavioral.memento.game;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
 
     @Test
     void undoRestoresTheWholeState() {
         Game game = new Game(100, 0);
+        game.selectGun(Game.Gun.PISTOL);
         game.shoot();
         game.changePosition(5);
         game.takeDamage(5);
+
         HistoryManager history = new HistoryManager();
-        history.save(game);                    // health=95, position=5, bullets=9
+        history.save(game);                    // health=95, position=5, bullets=9, gun=PISTOL
 
         game.changePosition(10);
         game.takeDamage(20);
         game.shoot();
         game.shoot();
+        System.out.println("Before undo: " + game);
         history.undo(game);
+        System.out.println("After undo: " + game);
 
         assertEquals(95, game.getHealth());
         assertEquals(5, game.getShooterPosition());
         assertEquals(9, game.getBullets());    // Game copies its own fields, nothing is forgotten
+        assertEquals(Game.Gun.PISTOL, game.getGun());  // Gun is also restored
     }
 
     @Test

@@ -5,6 +5,7 @@ public class Game {
     private int health;
     private int shooterPosition;
     private int bullets = 10;
+    private Gun gun;
 
     public Game(int health, int shooterPosition) {
         this.health = health;
@@ -23,14 +24,19 @@ public class Game {
         shooterPosition = newPosition;
     }
 
+    public void selectGun(Gun gun) {
+        this.gun = gun;
+    }
+
     public Memento save() {
-        return new Memento(health, shooterPosition, bullets);
+        return new Memento(health, shooterPosition, bullets, gun);
     }
 
     public void restore(Memento memento) {
         this.health = memento.health;
         this.shooterPosition = memento.shooterPosition;
         this.bullets = memento.bullets;
+        this.gun = memento.gun;
     }
 
     public int getHealth() {
@@ -45,13 +51,22 @@ public class Game {
         return bullets;
     }
 
+    public Gun getGun() {
+        return gun;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
                 "health=" + health +
                 ", shooterPosition=" + shooterPosition +
                 ", bullets=" + bullets +
+                ", gun=" + gun +
                 "}";
+    }
+
+    public enum Gun {
+        PISTOL, RIFLE, SHOTGUN
     }
 
     // Memento: opaque to everyone else. Private fields and constructor are reachable only from Game.
@@ -59,11 +74,13 @@ public class Game {
         private final int health;
         private final int shooterPosition;
         private final int bullets;
+        private final Gun gun;
 
-        private Memento(int health, int shooterPosition, int bullets) {
+        private Memento(int health, int shooterPosition, int bullets, Gun gun) {
             this.health = health;
             this.shooterPosition = shooterPosition;
             this.bullets = bullets;
+            this.gun = gun;
         }
     }
 }
