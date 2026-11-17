@@ -1,7 +1,8 @@
 package ge.edu.ug.patterns.behavioral.mediator.onlinejoker;
 
 public interface JokerMediator {
-    void broadcastMessage(JokerMember sender, String card);
+    // Returns false when the move is refused (not the player's turn, or no game running)
+    boolean broadcastMove(JokerMember sender, Card card);
 
     void addMember(JokerMember jokerMember);
 

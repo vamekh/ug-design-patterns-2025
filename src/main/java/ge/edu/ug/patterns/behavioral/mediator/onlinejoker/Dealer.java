@@ -9,14 +9,9 @@ import java.util.Random;
 // with the two black sixes (6♠, 6♣) replaced by two jokers.
 public class Dealer {
     public static final int DECK_SIZE = 36;
-    public static final String RED_JOKER = "Red Joker";
-    public static final String BLACK_JOKER = "Black Joker";
-
-    private static final String[] SUITS = {"♠", "♣", "♥", "♦"};
-    private static final String[] RANKS = {"6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
     private final Random random;
-    private List<String> deck = new ArrayList<>();
+    private List<Card> deck = new ArrayList<>();
 
     public Dealer() {
         this(new Random());
@@ -26,30 +21,38 @@ public class Dealer {
         this.random = random;
     }
 
-    public void startNewGame() {
-        deck = new ArrayList<>();
-        for (String suit : SUITS) {
-            for (String rank : RANKS) {
-                boolean blackSix = rank.equals("6") && (suit.equals("♠") || suit.equals("♣"));
+    public static List<Card> fullDeck() {
+        List<Card> cards = new ArrayList<>();
+        for (Card.Suit suit : Card.Suit.values()) {
+            for (Card.Rank rank : Card.Rank.values()) {
+                if (rank == Card.Rank.JOKER) {
+                    continue;
+                }
+                boolean blackSix = rank == Card.Rank.SIX && (suit == Card.Suit.SPADES || suit == Card.Suit.CLUBS);
                 if (!blackSix) {
-                    deck.add(rank + suit);
+                    cards.add(new Card(rank, suit));
                 }
             }
         }
-        deck.add(RED_JOKER);
-        deck.add(BLACK_JOKER);
+        cards.add(Card.RED_JOKER);
+        cards.add(Card.BLACK_JOKER);
+        return cards;
+    }
+
+    public void shuffleNewDeck() {
+        deck = fullDeck();
         Collections.shuffle(deck, random);
         System.out.println("Starting a new game...");
     }
 
-    public List<String> getRandomCardsFromTheDeck(int numberOfCards) {
+    public List<Card> deal(int numberOfCards) {
         if (numberOfCards > deck.size()) {
             throw new IllegalStateException(
                     "Cannot deal " + numberOfCards + " cards, only " + deck.size() + " left in the deck");
         }
         // the deck is already shuffled, so the top cards are random
-        List<String> top = deck.subList(0, numberOfCards);
-        List<String> dealt = new ArrayList<>(top);
+        List<Card> top = deck.subList(0, numberOfCards);
+        List<Card> dealt = new ArrayList<>(top);
         top.clear(); // remove the dealt cards from the deck to avoid duplicates
         return dealt;
     }
